@@ -18,5 +18,14 @@ $ mkdir /srv/jons-sys-backups
 $ restic init --repo /srv/jons-sys-backups/restic
 ----
 
+.tl;dr of the automated part
+----
+$ build-exclude ./exclude.system ./exclude.jzacsh > exclude.txt
+$ RESTIC_PASSWORD=... restic backup \
+    --repo /srv/jons-sys-backups/restic \
+    --exclude-file ./exclude.txt \
+    /
+----
+
 NOTE: this is a mish-mosh of {systemScript}[an old system-wide backup] and
 {homeScript}[a `$HOME` backup]
