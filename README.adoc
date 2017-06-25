@@ -20,7 +20,7 @@ $ restic init --repo /srv/jons-sys-backups/restic
 
 .tl;dr of the automated part
 ----
-$ build-exclude ./exclude.system ./exclude.jzacsh > exclude.txt
+$ build-exclude ./exclude-system ./exclude.jzacsh > exclude.txt
 $ RESTIC_PASSWORD=... restic backup \
     --repo /srv/jons-sys-backups/restic \
     --exclude-file ./exclude.txt \
