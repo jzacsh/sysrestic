@@ -1,0 +1,22 @@
+= system-wide backup for encrypted root
+:LVMencryption: https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system
+:sysBackupRsync: https://gist.github.com/jzacsh/cf6d5a50449b44db2db334c33535a111
+:slocRefBin: https://github.com/jzacsh/bin/blob
+:homeScript: {slocRefBin}/b73710888c23d/share/resticw.sh
+:systemScript: {slocRefBin}/b73710888c23d/share/borgw_system.sh
+
+these are files that facilitate system-wide backup for an encrypted drive. that
+is: we assume `/` is {LVMencryption}[encrypted somehow]. Practically this is
+just a script and some systemd unit-file to run {sysBackupRsync}[my common
+rsync].
+
+== usage & how to
+
+.init `restic` repo
+----
+$ mkdir /srv/jons-sys-backups
+$ restic init --repo /srv/jons-sys-backups/restic
+----
+
+NOTE: this is a mish-mosh of {systemScript}[an old system-wide backup] and
+{homeScript}[a `$HOME` backup]
