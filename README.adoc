@@ -111,12 +111,15 @@ $ for unit in /usr/local/sysbackup/sysbackup.{timer,service}; do
 $ systemctl daemon-reload # <2>
 $ systemctl enable sysbackup.{timer,service}
 $ systemctl show sysbackup.service | grep Environment # <3>
-$ systemctl start sysbackup.service
+$ systemctl start sysbackup.timer &&
+  systemctl start sysbackup.service <4>
 ----
 <1> per {doc_systemd_loadpath}[unit file load path] documetnation
 <2> should be run anytime you change systemd files _(eg: if this repo is updated
 and you update the installed files as well)_
 <3> *ensure* this outputs what you expect from your `.conf` file
+<4> TODO needs to be double-checked; not sure this is the right order to ensure
+the timer gets queued correctly
 
 === regular usage
 
