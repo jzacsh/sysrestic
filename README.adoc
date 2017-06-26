@@ -96,6 +96,9 @@ locks
 
 Finally, hand off to systemd _(ie: `/usr/lib/systemd/...` and co)_
 
+NOTE: these last commands are here for tranpsarency, you can instead inspect and
+call a script to do this: `./install-systemd /usr/local/sysbackup/`
+
 .root shell
 ----
 $ mkdir /usr/lib/systemd/system/sysbackup.service.d/
@@ -113,7 +116,7 @@ $ systemctl start sysbackup.service
 <1> per {doc_systemd_loadpath}[unit file load path] documetnation
 <2> should be run anytime you change systemd files _(eg: if this repo is updated
 and you update the installed files as well)_
-<3> *ensure* this outputs what you expect from your `.conf` file 
+<3> *ensure* this outputs what you expect from your `.conf` file
 
 === regular usage
 
