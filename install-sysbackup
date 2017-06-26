@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+die() ( echo "failed: ""$@" >&2; exit 1; )
+[[ "$#" -eq 2 ]] || die 'usage UPDATED_GIT_REPO /SYS/DIR'
+declare -r repo="$1"
+declare -r sysDir="$2"
+listRepo() (
+  find "$repo" -mindepth 1 -maxdepth 1 -type f -print |
+    sed '/[LICENSE|INSTALL]$/'d
+)
+
+if [[ -e "$sysDir" ]];then
+  [[ -d "$sysDir" ]] || die '/SYS/DIR arg not a directory: '"$sysDir"
+else
+  mkdir -p "$sysDir"
+fi
+
+[[ "$(listRepo | wc -l)" != 0 ]] || die 'nothing in repo: '"$repo"
+while read f; do
+  sudo cp -flv "$f" "$sysDir" || die 'copying: '"$f"
+done < <(listRepo)
+
+printf -v sedExpr -- 's/SRV_DIR_REPLACE/%s/g' "$(basename "$sysDir")"
+sed -i "$sedExpr" "$sysDir"/sysbackup.service || die 'fixing service file'
+
+printf 'WARNING: do not forget to:
+  1. customize your exclude-system and exclude.* files
+  2. customize your .conf file for RESTIC_PASSWORD= and PATH=
+' >&2

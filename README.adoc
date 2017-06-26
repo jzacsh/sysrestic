@@ -1,30 +1,124 @@
 = system-wide backup for encrypted root
+:toc:
+:toclevels: 5
 :LVMencryption: https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system
 :sysBackupRsync: https://gist.github.com/jzacsh/cf6d5a50449b44db2db334c33535a111
 :slocRefBin: https://github.com/jzacsh/bin/blob
 :homeScript: {slocRefBin}/b73710888c23d/share/resticw.sh
 :systemScript: {slocRefBin}/b73710888c23d/share/borgw_system.sh
+:doc_systemd_loadpath: https://www.freedesktop.org/software/systemd/man/systemd.unit.html#Unit%20File%20Load%20Path
 
 these are files that facilitate system-wide backup for an encrypted drive. that
 is: we assume `/` is {LVMencryption}[encrypted somehow]. Practically this is
 just a script and some systemd unit-file to run {sysBackupRsync}[my common
 rsync].
 
-== usage & how to
-
-.init `restic` repo
-----
-$ mkdir /srv/jons-sys-backups
-$ restic init --repo /srv/jons-sys-backups/restic
-----
-
-.tl;dr of the automated part
+.tl;dr of the *what* is automated
 ----
 $ build-exclude ./exclude-system ./exclude.jzacsh > exclude.txt
 $ RESTIC_PASSWORD=... restic backup \
     --repo /srv/jons-sys-backups/restic \
     --exclude-file ./exclude.txt \
     /
+----
+
+== overview: usage & how to
+
+First some pre-requisites/setup, then the regular usage of this repo.
+
+=== one time: prerequisites
+
+.TODOs for this section:
+. consider replacing `.conf` explanations with some final step like `systemctl
+edit sysbackup.service`
+.. <<step3, step 3>>'s `sysbackup.service.d` not confirmed; perhaps has to be
+manually setup over in the `/etc/` paralell _(ie: maybe `systemctl enable`
+doesn't do the linking on this type of file)_
+
+[[step1]]
+==== 1: start a "repo" for `restic`
+
+.rest calls its backup storage a "repo"
+----
+$ mkdir -p /srv/sysbackup/restic
+$ restic init --repo /srv/sysbackup/restic
+  # .. prompts you to create a password and such
+----
+
+==== 2: pick a system dir for settings
+
+Now just pick a system directory for your settings -- mostly files from this
+repository -- and unpack into that directory. As follows.
+
+.Pick a directory, eg: `/usr/local/sysbackup/`
+----
+$ mkdir /usr/local/sysbackup/
+----
+
+.Files to unpack there:
+1. need *your own* versions of `./exclude-system`, `./exclude.jzacsh` +
+  _(at least of the latter file, if you want to exclude anything in `$HOME`)_
+2. You MUST create a file, with an `.conf` extension, and contents:
+----
+[Service]
+Environment="PATH=/usr/local/sysbackup/:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin" <1>
+Environment="RESTIC_PASSWORD=YOUR_RESTIC_REPO_PASSWORD" <2>
+----
+<1> TODO can we can APPEND? ie: mv almost all this line to main `*.service` file
+<2> obvz, `YOUR_RESTIC_REPO_PASSWORD` is replaced by <<step1, step 1>> password
+
+WARNING: `./install-sysbackup` might _look_ like it does this unpacking, but
+beware: it isn't parameterized, or very thoughtfully written; and you still need
+to hand create a `.conf` file anyway
+
+.To recap, you now have something like:
+----
+$ find /usr/local/sysbackup/ -printf '%P\n'
+sysbackup
+build-exclude
+exclude-system
+exclude.jzacsh
+sysbackup.service
+sysbackup.timer
+sysbackup.conf
+
+$ find /srv/sysbackup/restic -mindepth 1 -maxdepth 1 -printf '%P\n'
+keys
+config
+data
+snapshots
+index
+locks
+----
+
+[[step3]]
+==== 3: tell systemd
+
+Finally, hand off to systemd _(ie: `/usr/lib/systemd/...` and co)_
+
+.root shell
+----
+$ mkdir /usr/lib/systemd/system/sysbackup.service.d/
+$ ln -sv /usr/local/sysbackup/sysbackup.conf \
+         /usr/lib/systemd/system/sysbackup.service.d/
+$ mkdir /usr/lib/systemd/system/
+$ for unit in /usr/local/sysbackup/sysbackup.{timer,service}; do
+    ln -sv "$unit" /usr/lib/systemd/system/ # <1>
+  done
+$ systemctl daemon-reload # <2>
+$ systemctl enable sysbackup.{timer,service}
+$ systemctl show sysbackup.service | grep Environment # <3>
+$ systemctl start sysbackup.service
+----
+<1> per {doc_systemd_loadpath}[unit file load path] documetnation
+<2> should be run anytime you change systemd files _(eg: if this repo is updated
+and you update the installed files as well)_
+<3> *ensure* this outputs what you expect from your `.conf` file 
+
+=== regular usage
+
+----
+$ systemctl status sysbackup.service
 ----
 
 NOTE: this is a mish-mosh of {systemScript}[an old system-wide backup] and

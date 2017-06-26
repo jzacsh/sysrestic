@@ -1,0 +1,9 @@
+[Unit]
+Description=Periodically backup entire system
+
+[Timer]
+OnUnitActiveSec=90m
+OnBootSec=15m
+
+[Install]
+WantedBy=timers.target

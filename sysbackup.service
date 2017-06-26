@@ -1,0 +1,7 @@
+[Unit]
+Description=System-wide, homebrewed backups, to a restic repo
+Documentation=https://gist.github.com/jzacsh/42f193a40f274c07441170fea6ce0a36
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c 'sysbackup / /srv/sysbackup/restic /usr/local/sysbackup/exclude{-system,.*}'
