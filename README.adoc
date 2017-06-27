@@ -13,6 +13,14 @@ is: we assume `/` is {LVMencryption}[encrypted somehow]. Practically this is
 just a script and some systemd unit-file to run {sysBackupRsync}[my common
 rsync].
 
+... *j/k* this is now using `restic` _(ie: not an rsync command -- but an
+encrypted backup)_
+
+.ultimate goal
+. note: *NOT* yet done:
+. to just encode laptop `restic` backups as a debian package i can
+forget/inspect later just like other things on my computer
+
 .tl;dr of the *what* is automated
 ----
 $ build-exclude ./exclude-system ./exclude.jzacsh > exclude.txt
