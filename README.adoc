@@ -8,6 +8,8 @@
 :systemScript: {slocRefBin}/b73710888c23d/share/borgw_system.sh
 :doc_systemd_loadpath: https://www.freedesktop.org/software/systemd/man/systemd.unit.html#Unit%20File%20Load%20Path
 
+WARNING: this project is totally under flux as of `4031a8c162765b`
+
 these are files that facilitate system-wide backup for an encrypted drive. that
 is: we assume `/` is {LVMencryption}[encrypted somehow]. Practically this is
 just a script and some systemd unit-file to run {sysBackupRsync}[my common
