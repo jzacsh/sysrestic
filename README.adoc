@@ -138,9 +138,9 @@ $ journalctl --follow -u sysbackup.service -u sysbackup.timer
 ----
 
 .uninstalling should be as simple as
----
+----
 $ uninstall-sysbackup
----
+----
 
 NOTE: this is a mish-mosh of {systemScript}[an old system-wide backup] and
 {homeScript}[a `$HOME` backup]
