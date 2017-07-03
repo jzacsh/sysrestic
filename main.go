@@ -11,7 +11,7 @@ type resticCmd struct {
 }
 
 func (c *resticCmd) parseExcludes() {
-	panic("parseExcludes() not yet implemented: exclude.ParseHomeConfs() in loop, then exclude.Build()")
+	panic("parseExcludes() not yet implemented: exclude.ParseHomeConf() in loop, then exclude.Build()")
 }
 
 func parseCli(args []string) error {

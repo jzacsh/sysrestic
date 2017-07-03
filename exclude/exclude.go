@@ -1,9 +1,9 @@
 package main
 
 func Build(system []string, homes ...[]string) ([]string, error) {
-	panic("ParseHomeConfs() not yet implemented")
+	panic("Build() not yet implemented")
 }
 
-func ParseHomeConfs(homePath string) ([]string, error) {
-	panic("ParseHomeConfs() not yet implemented")
+func ParseHomeConf(homePath string) ([]string, error) {
+	panic("ParseHomeConf() not yet implemented")
 }
