@@ -8,7 +8,7 @@
 :systemScript: {slocRefBin}/b73710888c23d/share/borgw_system.sh
 :doc_systemd_loadpath: https://www.freedesktop.org/software/systemd/man/systemd.unit.html#Unit%20File%20Load%20Path
 
-WARNING: this project is totally under flux as of `4031a8c162765b`
+WARNING: this project is <<flux, totally under flux>> as of `4031a8c162765b`
 
 these are files that facilitate system-wide backup for an encrypted drive. that
 is: we assume `/` is {LVMencryption}[encrypted somehow]. Practically this is
@@ -146,3 +146,27 @@ $ uninstall-sysbackup
 
 NOTE: this is a mish-mosh of {systemScript}[an old system-wide backup] and
 {homeScript}[a `$HOME` backup]
+
+[[flux]]
+== golang rewrite
+
+.make targets: `all`, `clean`, `test`, `sysrestic`
+----
+$ make  # all is default
+rm -f -rf sysrestic
+go test ./...
+--- FAIL: Test_parseCli (0.00s)
+	main_test.go:6: Test of parseCli() not yet implemented
+--- FAIL: Test_parseExcludes (0.00s)
+	main_test.go:10: Test of parseExcludes() not yet implemented
+FAIL
+FAIL	_/home/jzacsh/tmp/lxcshare/sysrestic	0.002s
+--- FAIL: TestBuild (0.00s)
+	exclude_test.go:6: tests of ParseHomeConfs() not yet implemented
+--- FAIL: TestParseHomeConfs (0.00s)
+	exclude_test.go:10: tests of ParseHomeConfs() not yet implemented
+FAIL
+FAIL	_/home/jzacsh/tmp/lxcshare/sysrestic/exclude	0.002s
+Makefile:10: recipe for target 'test' failed
+make: *** [test] Error 1
+----
