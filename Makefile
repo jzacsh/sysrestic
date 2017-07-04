@@ -4,6 +4,7 @@ SRC  :=  $(shell find ./ -type f -name '*.go')
 all: clean test $(OUT)
 
 $(OUT): $(SRC)
+	go build ./...
 	go build -o $@
 
 test:
