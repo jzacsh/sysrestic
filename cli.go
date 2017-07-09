@@ -64,7 +64,7 @@ func isReadableDir(path string) (bool, error) {
 	if isDir {
 		return true, nil
 	}
-	return false, fmt.Errorf("not a directory")
+	return false, fmt.Errorf("%s not a directory", path)
 }
 
 func isReadableFile(path string) (bool, error) {
@@ -77,7 +77,7 @@ func isReadableFile(path string) (bool, error) {
 	if isFile {
 		return true, nil
 	}
-	return false, fmt.Errorf("is a directory")
+	return false, fmt.Errorf("%s is a directory", path)
 }
 
 func parseCli(args []string) (*resticCmd, error) {
@@ -94,10 +94,10 @@ func parseCli(args []string) (*resticCmd, error) {
 		ExcludeSysPath: strings.TrimSpace(args[1]),
 	}
 	if is, e := isReadableDir(r.ResticRepoPath); !is {
-		return nil, fmt.Errorf("RESTIC_REPO not a readable dir '%s': %s", r.ResticRepoPath, e)
+		return nil, fmt.Errorf("RESTIC_REPO not a readable dir: %s", e)
 	}
 	if is, e := isReadableFile(r.ExcludeSysPath); !is {
-		return nil, fmt.Errorf("EXCLUDE_FILE not a readable file '%s': %s", r.ExcludeSysPath, e)
+		return nil, fmt.Errorf("EXCLUDE_FILE not a readable file: %s", e)
 	}
 
 	return r, nil
