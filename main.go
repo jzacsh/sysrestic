@@ -9,7 +9,7 @@ import (
 type resticCmd struct {
 	ExcludeSysPath string
 	ResticRepoPath string
-	Log            *log.Logger
+	Err            *log.Logger
 }
 
 func (c *resticCmd) String() string {
@@ -19,7 +19,7 @@ func (c *resticCmd) String() string {
 }
 
 func (c *resticCmd) parseExcludes() {
-	c.Log.Fatalf("parseExcludes() not yet implemented: exclude.ParseHomeConf() in loop, then exclude.Build()")
+	c.Err.Fatalf("parseExcludes() not yet implemented: exclude.ParseHomeConf() in loop, then exclude.Build()")
 }
 
 func main() {
@@ -28,7 +28,7 @@ func main() {
 	if e != nil {
 		lg.Fatalf("parsing command: %s\n", e)
 	}
-	r.Log = lg
+	r.Err = lg
 
-	r.Log.Fatalf("not yet implemented, but got:\n%s\n", r)
+	r.Err.Fatalf("not yet implemented, but got:\n%s\n", r)
 }
