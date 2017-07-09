@@ -75,7 +75,7 @@ func main() {
 	r.Err = lg
 
 	// TODO(zacsh) remaining steps to implement:
-	// 1. gets listing of every $HOME on the system
+	//-1. gets listing of every $HOME on the system
 	//    a. getent passwd
 	//       to get real/human users on the machine, is a pain in the ass; here's
 	//       what it is in shell:
@@ -87,9 +87,9 @@ func main() {
 	//
 	//       TODO(zacsh) GOOS: find OSX-way to do this & add ifdef
 	//    b. discard lines without a home
-	// 2. reads said $HOME's ~/.config/sysrestic.exclude or ~/.sysrestic.exclude
+	//-2. reads said $HOME's ~/.config/sysrestic.exclude or ~/.sysrestic.exclude
 	//    ie: call exclude.ParseHomeConf()
-	// 3. creates a new exclude-file, unifying all $HOME's excludes w/EXCLUDE_FILE
+	//-3. creates a new exclude-file, unifying all $HOME's excludes w/EXCLUDE_FILE
 	//    ie: call exclude.Build(c.ExcludeSysPath, ....)
 	// 4. shells out to restic:
 	//    a. open tempfile
