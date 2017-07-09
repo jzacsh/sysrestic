@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 
 	"./exclude"
 )
@@ -12,6 +13,7 @@ import (
 type resticCmd struct {
 	ExcludeSysPath  string
 	ResticRepoPath  string
+	BackupTarget    string
 	Err             *log.Logger
 	UnifiedExcludes string
 	Excludes        []string
@@ -66,6 +68,17 @@ func (c *resticCmd) parseExcludes() error {
 	return ioutil.WriteFile(c.UnifiedExcludes, lines, 0644)
 }
 
+func (c *resticCmd) runBackup() error {
+	cmd := exec.Command(
+		"restic", "backup",
+		"--repo", c.ResticRepoPath,
+		"--exclude-file", c.UnifiedExcludes,
+		c.BackupTarget)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
+
 func main() {
 	lg := log.New(os.Stderr, "sysrestic: ", 0)
 	r, e := parseCli(os.Args[1:])
@@ -102,5 +115,7 @@ func main() {
 
 	fmt.Printf("%d excludes written to %s\n", len(r.Excludes), r.UnifiedExcludes)
 
-	r.Err.Fatalf("not yet implemented, but got:\n%s\n", r)
+	if e := r.runBackup(); e != nil {
+		r.Err.Fatalf("restic: %v\n", e)
+	}
 }

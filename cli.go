@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+const defaultBackupTarget string = "/"
+
 const usageDoc string = `sysrestic - an exclude-file joiner for system backups with restic
 
 Synopsis:
@@ -92,6 +94,7 @@ func parseCli(args []string) (*resticCmd, error) {
 	r := &resticCmd{
 		ResticRepoPath: strings.TrimSpace(args[0]),
 		ExcludeSysPath: strings.TrimSpace(args[1]),
+		BackupTarget:   defaultBackupTarget,
 	}
 	if is, e := isReadableDir(r.ResticRepoPath); !is {
 		return nil, fmt.Errorf("RESTIC_REPO not a readable dir: %s", e)
