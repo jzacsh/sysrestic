@@ -27,6 +27,10 @@ func TestLoadPasswdFrom(t *testing.T) {
 		t.Fatalf("unexpected, loading test passwd file: %s", e)
 	}
 
+	if len(actual) != len(expect) {
+		t.Fatalf("expected %d lines, but got %d", len(expect), len(actual))
+	}
+
 	for i, line := range expect {
 		if actual[i] == line {
 			continue
