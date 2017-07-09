@@ -31,8 +31,7 @@ func Build(system []string, homes ...[]string) []string {
 //
 // Return is a list of absolute paths that should be excluded
 func ParseHomeConf(homePath string) ([]string, error) {
-	confPath := filepath.Join(homePath, ".config/sysrestic.exclude")
-	conf, err := os.Open(confPath)
+	conf, err := os.Open(filepath.Join(homePath, ".config/sysrestic.exclude"))
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +42,7 @@ func ParseHomeConf(homePath string) ([]string, error) {
 		excludes = append(excludes, filepath.Join(homePath, scanner.Text()))
 	}
 	if err := scanner.Err(); err != nil {
-		return excludes, fmt.Errorf("reading %s: %s", confPath, err)
+		return excludes, fmt.Errorf("reading %s: %s", conf.Name(), err)
 	}
 	return excludes, nil
 }
