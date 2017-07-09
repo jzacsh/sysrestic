@@ -40,6 +40,23 @@ func TestParseHomeConf(t *testing.T) {
 		t.Errorf("unexpected problem with fixture, 'alice': %v", err)
 	}
 
-	t.Logf("%d exclude paths\n", len(exc)) // TODO finish test
-	t.Errorf("tests of ParseHomeConf() not yet implemented")
+	// NOTE: keep this in sync with testdata under alice/ dir
+	var expect []string
+	for _, p := range []string{
+		"/foo",
+		"bar/*.txt",
+		"baz/thing/",
+		"/etc/",
+	} {
+		expect = append(expect, filepath.Join(aliceHome, p))
+	}
+
+	for i, path := range expect {
+		if exc[i] == path {
+			continue
+		}
+		t.Errorf(
+			"expected line #%d to parse as:\n\t%s\n  but got:\n\t%s\n",
+			i+1, path, exc[i])
+	}
 }
