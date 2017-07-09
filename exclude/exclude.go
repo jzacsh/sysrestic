@@ -11,13 +11,27 @@ import (
 //
 // System excludes list is required, and arbitrary number of users' excludes are
 // accepted.
-func Build(system []string, homes ...[]string) []string {
+func Build(system string, homes ...[]string) ([]string, error) {
 	var single []string
-	single = append(single, system...)
+
+	f, e := os.Open(system)
+	if e != nil {
+		return nil, fmt.Errorf("opening %s: %v", system, e)
+	}
+	sc := bufio.NewScanner(f)
+	var systemExcs []string
+	for sc.Scan() {
+		systemExcs = append(systemExcs, sc.Text())
+	}
+	if e := sc.Err(); e != nil {
+		return nil, fmt.Errorf("reading %s: %v", system, e)
+	}
+
+	single = append(single, systemExcs...)
 	for _, exclude := range homes {
 		single = append(single, exclude...)
 	}
-	return single
+	return single, nil
 }
 
 func findConf(homePath string) (*os.File, error) {

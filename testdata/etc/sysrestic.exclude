@@ -1,0 +1,4 @@
+/proc/*
+/dev/*
+/tmp/*
+/lost+found

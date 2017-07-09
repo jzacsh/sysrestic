@@ -10,22 +10,34 @@ import (
 const fixtureDir string = "../testdata"
 
 func TestBuild(t *testing.T) {
-	excludes := Build(
-		[]string{"/proc/*", "/dev/*", "/tmp/*", "/lost+found"},
-		[]string{"/home/alice/linus-tree", "/home/alice/build/", "/home/alice/mounts"},
-	)
+	test.AssertFixtureDir(t, fixtureDir)
+	sysExclude := filepath.Join(fixtureDir, "/etc/sysrestic.exclude")
+
 	expected := []string{
 		"/proc/*", "/dev/*", "/tmp/*", "/lost+found",
 		"/home/alice/linus-tree", "/home/alice/build/", "/home/alice/mounts",
 	}
-	for i, actual := range excludes {
-		if actual == expected[i] {
+
+	actual, e := Build(sysExclude, []string{
+		"/home/alice/linus-tree",
+		"/home/alice/build/",
+		"/home/alice/mounts",
+	})
+	if e != nil {
+		t.Fatalf("unexpected problem with Build(): %v", e)
+	}
+	if len(actual) != len(expected) {
+		t.Fatalf("expected %d lines, but got %d", len(expected), len(actual))
+	}
+
+	for i, exp := range expected {
+		if exp == actual[i] {
 			continue
 		}
 
 		t.Errorf(
 			"expected line #%d to be '%s', but got '%s'",
-			i+1, expected[i], actual)
+			i+1, exp, actual[i])
 	}
 }
 
