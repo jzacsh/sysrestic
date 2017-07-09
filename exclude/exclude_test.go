@@ -1,24 +1,13 @@
 package exclude
 
 import (
-	"fmt"
-	"os"
 	"path/filepath"
 	"testing"
+
+	"../test"
 )
 
-func getFixtureDir() (string, error) {
-	path := "../testdata"
-	if f, err := os.Stat(path); (f != nil && !f.IsDir()) || err != nil {
-		if f != nil && !f.IsDir() {
-			return "", fmt.Errorf(
-				"testdata was not a directory: %v", err)
-		} else {
-			return "", err
-		}
-	}
-	return path, nil
-}
+const fixtureDir string = "../testdata"
 
 func TestBuild(t *testing.T) {
 	excludes := Build(
@@ -41,10 +30,7 @@ func TestBuild(t *testing.T) {
 }
 
 func TestParseHomeConf(t *testing.T) {
-	fixtureDir, err := getFixtureDir()
-	if err != nil {
-		t.Fatalf("finding testdata: %v", err)
-	}
+	test.AssertFixtureDir(t, fixtureDir)
 
 	if _, err := ParseHomeConf("/dev/null"); err == nil {
 		t.Errorf("seem OK with /dev/null")
@@ -78,10 +64,7 @@ func TestParseHomeConf(t *testing.T) {
 }
 
 func TestParseHomeConf_AltPath(t *testing.T) {
-	fixtureDir, err := getFixtureDir()
-	if err != nil {
-		t.Fatalf("finding testdata: %v", err)
-	}
+	test.AssertFixtureDir(t, fixtureDir)
 
 	janetHome := filepath.Join(fixtureDir, "/home/janet")
 	exc, err := ParseHomeConf(janetHome)
