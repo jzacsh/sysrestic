@@ -1,6 +1,7 @@
 package usr
 
 import (
+	"os/user"
 	"path/filepath"
 	"testing"
 
@@ -53,5 +54,39 @@ func TestLoadPasswdFrom_EmptyFile(t *testing.T) {
 
 func TestListUsers(t *testing.T) {
 	test.AssertFixtureDir(t, fixtureDir)
-	t.Fatalf("ListUsers() not yet tested")
+
+	passwd, e := LoadPasswdFrom(filepath.Join(fixtureDir, "/etc/passwd"))
+	if e != nil {
+		t.Fatalf("unexpected, loading test passwd file: %s", e)
+	}
+
+	// NOTE: keep synced with testdata/etc/passwd
+	expect := []user.User{
+		user.User{Uid: "1000", Gid: "1000", Username: "alice", Name: "Alice,,,", HomeDir: "/home/alice"},
+		user.User{Uid: "1001", Gid: "1001", Username: "janet", Name: "Janet,,,", HomeDir: "/home/janet"},
+	}
+
+	actual, e := ListUsers(passwd)
+	if e != nil {
+		t.Fatalf("unexpected, parsing passwd lines: %s", e)
+	}
+
+	ueq := func(a, b user.User) bool {
+		return a.Uid == b.Uid &&
+			a.Gid == b.Gid &&
+			a.Username == b.Username &&
+			a.Name == b.Name &&
+			a.HomeDir == b.HomeDir
+	}
+
+	if len(actual) != len(expect) {
+		t.Fatalf("expected %d users, but got %d", len(expect), len(actual))
+	}
+
+	for i, u := range expect {
+		if ueq(u, actual[i]) {
+			continue
+		}
+		t.Errorf("expected user %v, but got %v", u, actual[i])
+	}
 }
