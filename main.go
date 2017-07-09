@@ -20,7 +20,7 @@ func (c *resticCmd) String() string {
 
 func (c *resticCmd) parseExcludes() {
 	c.Err.Fatalf("parseExcludes() not yet implemented: exclude.ParseHomeConf() in loop, then exclude.Build()")
-	// TODO: call listUserHomes()
+	// TODO: call listHumanUserHomes_Linux()
 }
 
 func main() {

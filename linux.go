@@ -8,8 +8,7 @@ import (
 )
 
 // TODO(zacsh) figure out how/if to test
-func listUserHomes() ([]string, error) {
-	return nil, fmt.Errorf("listUserHomes() not yet implemented")
+func listHumanUserHomes_Linux() ([]string, error) {
 	lines, e := usr.LoadPasswdFrom(usr.PasswdPathLinux)
 	if e != nil {
 		return nil, fmt.Errorf("loading %s: %s", usr.PasswdPathLinux, e)
