@@ -2,14 +2,18 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
+
+	"./exclude"
 )
 
 type resticCmd struct {
-	ExcludeSysPath string
-	ResticRepoPath string
-	Err            *log.Logger
+	ExcludeSysPath  string
+	ResticRepoPath  string
+	UnifiedExcludes string
+	Err             *log.Logger
 }
 
 func (c *resticCmd) String() string {
@@ -18,9 +22,46 @@ func (c *resticCmd) String() string {
 		c.ResticRepoPath, c.ExcludeSysPath)
 }
 
-func (c *resticCmd) parseExcludes() {
-	c.Err.Fatalf("parseExcludes() not yet implemented: exclude.ParseHomeConf() in loop, then exclude.Build()")
-	// TODO: call listHumanUserHomes_Linux()
+func (c *resticCmd) parseExcludes() error {
+	homes, e := listHumanUserHomes_Linux()
+	if e != nil {
+		return fmt.Errorf("finding $HOMEs: %v", e)
+	}
+
+	var excs [][]string
+	for _, home := range homes {
+		excludes, e := exclude.ParseHomeConf(home)
+		if e != nil {
+			return fmt.Errorf("parsing %s excludes: %v", home, e)
+		}
+		excs = append(excs, excludes)
+	}
+
+	unified, e := exclude.Build(c.ExcludeSysPath, excs...)
+	if e != nil {
+		return e
+	}
+
+	if len(unified) == 0 {
+		return nil
+	}
+
+	f, e := ioutil.TempFile("" /*default*/, "sysrestic-unified-excludes_")
+	if e != nil {
+		return fmt.Errorf("failed to start tempfile for excludes: %v", e)
+	}
+	defer f.Close()
+	c.UnifiedExcludes = f.Name()
+
+	// TODO(zacsh) remove this block and convert all `string` signatures for
+	// exclude-file handling to `byte`, since we just want ascii
+	var lines []byte
+	for _, ln := range unified {
+		lines = append(lines, []byte(ln)...)
+		lines = append(lines, '\n')
+	}
+
+	return ioutil.WriteFile(c.UnifiedExcludes, lines, 0644)
 }
 
 func main() {
