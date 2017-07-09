@@ -31,7 +31,10 @@ func main() {
 	r.Err = lg
 
 	// TODO(zacsh) remaining steps to implement:
-	// 1. visits every $HOME on the system
+	// 1. gets listing of every $HOME on the system
+	//    a. getent passwd
+	//       TODO(zacsh) GOOS: find OSX-way to do this & add ifdef
+	//    b. discard lines without a home
 	// 2. reads said $HOME's ~/.config/sysrestic.exclude or ~/.sysrestic.exclude
 	//    ie: call exclude.ParseHomeConf()
 	// 3. creates a new exclude-file, unifying all $HOME's excludes w/EXCLUDE_FILE
