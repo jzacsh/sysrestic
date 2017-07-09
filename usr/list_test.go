@@ -62,8 +62,11 @@ func TestListUsers(t *testing.T) {
 
 	// NOTE: keep synced with testdata/etc/passwd
 	expect := []user.User{
-		user.User{Uid: "1000", Gid: "1000", Username: "alice", Name: "Alice,,,", HomeDir: "/home/alice"},
-		user.User{Uid: "1001", Gid: "1001", Username: "janet", Name: "Janet,,,", HomeDir: "/home/janet"},
+		user.User{Uid: "0", Gid: "0", Username: "root", Name: "root", HomeDir: "/root"},
+		user.User{Uid: "1000", Gid: "1000", Username: "alice", Name: "Alice", HomeDir: "/home/alice"},
+		user.User{Uid: "1001", Gid: "1001", Username: "janet", Name: "Janet", HomeDir: "/home/janet"},
+		user.User{Uid: "65534", Gid: "65534", Username: "nobody", Name: "nobody", HomeDir: "/nonexistent"},
+		user.User{Uid: "117", Gid: "124", Username: "pulse", Name: "PulseAudio daemon", HomeDir: "/var/run/pulse"},
 	}
 
 	actual, e := ListUsers(passwd)
@@ -87,6 +90,6 @@ func TestListUsers(t *testing.T) {
 		if ueq(u, actual[i]) {
 			continue
 		}
-		t.Errorf("expected user %v, but got %v", u, actual[i])
+		t.Errorf("expected user:\n\t%v\nbut actually got user:\n\t%v\n", u, actual[i])
 	}
 }
