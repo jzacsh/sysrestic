@@ -7,8 +7,17 @@ import (
 	"path/filepath"
 )
 
-func Build(system []string, homes ...[]string) ([]string, error) {
-	panic("Build() not yet implemented")
+// Joins all excludes into a single exclude list
+//
+// System excludes list is required, and arbitrary number of users' excludes are
+// accepted.
+func Build(system []string, homes ...[]string) []string {
+	var single []string
+	single = append(single, system...)
+	for _, exclude := range homes {
+		single = append(single, exclude...)
+	}
+	return single
 }
 
 // Read exclude paths for a given user's home directory

@@ -18,10 +18,26 @@ func getFixtureDir() (string, error) {
 		}
 	}
 	return path, nil
-
 }
+
 func TestBuild(t *testing.T) {
-	t.Errorf("tests of Build() not yet implemented")
+	excludes := Build(
+		[]string{"/proc/*", "/dev/*", "/tmp/*", "/lost+found"},
+		[]string{"/home/alice/linus-tree", "/home/alice/build/", "/home/alice/mounts"},
+	)
+	expected := []string{
+		"/proc/*", "/dev/*", "/tmp/*", "/lost+found",
+		"/home/alice/linus-tree", "/home/alice/build/", "/home/alice/mounts",
+	}
+	for i, actual := range excludes {
+		if actual == expected[i] {
+			continue
+		}
+
+		t.Errorf(
+			"expected line #%d to be '%s', but got '%s'",
+			i+1, expected[i], actual)
+	}
 }
 
 func TestParseHomeConf(t *testing.T) {
