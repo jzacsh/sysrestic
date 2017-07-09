@@ -1,6 +1,6 @@
 OUT   :=  sysrestic
 DEBV  :=  0.1
-DEBT  :=  $(OUT)_$(DEBV)
+DEBT  :=  $(OUT)-$(DEBV)
 SRC   :=  $(shell find ./ -type f -name '*.go')
 
 all: clean test $(OUT)
@@ -21,6 +21,9 @@ $(DEBT): $(OUT)
 	chmod 600 $(@)/etc/$(OUT).conf
 	cp debian/control $(@)/DEBIAN/
 	sed --in-place "s/VERSION_HERE/$(DEBV)/g" $(@)/DEBIAN/control
+	cp LICENSE $(@)/
+	cp debian/install.sh $(@)/
+	cp debian/Makefile $(@)/
 	sudo chown -R root:root $(DEBT)
 
 $(DEBT).deb: $(DEBT)
@@ -31,6 +34,6 @@ test:
 	go test ./...
 
 clean:
-	$(RM) -rf $(OUT) $(OUT)_*
+	$(RM) -rf $(OUT) $(OUT)-*
 
 .PHONY: test all clean
