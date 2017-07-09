@@ -70,7 +70,7 @@ func main() {
 	lg := log.New(os.Stderr, "sysrestic: ", 0)
 	r, e := parseCli(os.Args[1:])
 	if e != nil {
-		lg.Fatalf("parsing command: %s\n", e)
+		lg.Fatalf("parsing command: %v\n", e)
 	}
 	r.Err = lg
 
@@ -95,6 +95,12 @@ func main() {
 	//    a. open tempfile
 	//    b. dump in exclude.Build(...)'s result
 	//    c. os.Exec(...) .Run() with tempfile as arg
+
+	if e := r.parseExcludes(); e != nil {
+		lg.Fatalf("excludes: %v\n", e)
+	}
+
+	fmt.Printf("%d excludes written to %s\n", len(r.Excludes), r.UnifiedExcludes)
 
 	r.Err.Fatalf("not yet implemented, but got:\n%s\n", r)
 }
