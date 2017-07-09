@@ -12,8 +12,9 @@ import (
 type resticCmd struct {
 	ExcludeSysPath  string
 	ResticRepoPath  string
-	UnifiedExcludes string
 	Err             *log.Logger
+	UnifiedExcludes string
+	Excludes        []string
 }
 
 func (c *resticCmd) String() string {
@@ -41,8 +42,9 @@ func (c *resticCmd) parseExcludes() error {
 	if e != nil {
 		return e
 	}
+	c.Excludes = unified
 
-	if len(unified) == 0 {
+	if len(c.Excludes) == 0 {
 		return nil
 	}
 
@@ -56,7 +58,7 @@ func (c *resticCmd) parseExcludes() error {
 	// TODO(zacsh) remove this block and convert all `string` signatures for
 	// exclude-file handling to `byte`, since we just want ascii
 	var lines []byte
-	for _, ln := range unified {
+	for _, ln := range c.Excludes {
 		lines = append(lines, []byte(ln)...)
 		lines = append(lines, '\n')
 	}
