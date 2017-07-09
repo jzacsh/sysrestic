@@ -78,5 +78,33 @@ func TestParseHomeConf(t *testing.T) {
 }
 
 func TestParseHomeConf_AltPath(t *testing.T) {
-	t.Skip("alternative config paths")
+	fixtureDir, err := getFixtureDir()
+	if err != nil {
+		t.Fatalf("finding testdata: %v", err)
+	}
+
+	janetHome := filepath.Join(fixtureDir, "/home/janet")
+	exc, err := ParseHomeConf(janetHome)
+	if err != nil {
+		t.Errorf("unexpected problem with fixture, 'janet': %v", err)
+	}
+
+	// NOTE: keep this in sync with testdata under janet/ dir
+	var expect []string
+	for _, p := range []string{
+		"/foo/bar/",
+		".config/",
+		"bioresearch.*.d",
+	} {
+		expect = append(expect, filepath.Join(janetHome, p))
+	}
+
+	for i, path := range expect {
+		if exc[i] == path {
+			continue
+		}
+		t.Errorf(
+			"expected line #%d to parse as:\n\t%s\n  but got:\n\t%s\n",
+			i+1, path, exc[i])
+	}
 }
