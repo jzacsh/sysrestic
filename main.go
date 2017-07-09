@@ -30,5 +30,16 @@ func main() {
 	}
 	r.Err = lg
 
+	// TODO(zacsh) remaining steps to implement:
+	// 1. visits every $HOME on the system
+	// 2. reads said $HOME's ~/.config/sysrestic.exclude or ~/.sysrestic.exclude
+	//    ie: call exclude.ParseHomeConf()
+	// 3. creates a new exclude-file, unifying all $HOME's excludes w/EXCLUDE_FILE
+	//    ie: call exclude.Build(c.ExcludeSysPath, ....)
+	// 4. shells out to restic:
+	//    a. open tempfile
+	//    b. dump in exclude.Build(...)'s result
+	//    c. os.Exec(...) .Run() with tempfile as arg
+
 	r.Err.Fatalf("not yet implemented, but got:\n%s\n", r)
 }
