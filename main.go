@@ -33,6 +33,14 @@ func main() {
 	// TODO(zacsh) remaining steps to implement:
 	// 1. gets listing of every $HOME on the system
 	//    a. getent passwd
+	//       to get real/human users on the machine, is a pain in the ass; here's
+	//       what it is in shell:
+	//
+	//           while read usr uid hm; do
+	//             [[ "$uid" -ge 1000 && "$usr" != nobody ]] || continue
+	//             printf '%s[%d]: %s\n' "$usr" $uid "$hm"
+	//           done < <(getent passwd | awk -F : '{print $1 "\t" $3 "\t" $6 }' )
+	//
 	//       TODO(zacsh) GOOS: find OSX-way to do this & add ifdef
 	//    b. discard lines without a home
 	// 2. reads said $HOME's ~/.config/sysrestic.exclude or ~/.sysrestic.exclude
