@@ -10,6 +10,7 @@ $(OUT): $(SRC)
 	go build -o $@
 
 $(DEBT): $(OUT)
+	sudo --remove-timestamp
 	mkdir -p $(@)/usr/lib/$(OUT)/bin
 	mkdir -p $(@)/etc
 	mkdir -p $(@)/DEBIAN
@@ -22,6 +23,7 @@ $(DEBT): $(OUT)
 	printf 'etc/%s.conf\n' $(OUT) >> $(@)/DEBIAN/conffiles
 	cp debian/control $(@)/DEBIAN/
 	sed --in-place "s/VERSION_HERE/$(DEBV)/g" $(@)/DEBIAN/control
+	sudo chown -R root:root $(DEBT)
 
 $(DEBT).deb: $(DEBT)
 	@echo "not yet implemented" >&2
