@@ -20,6 +20,34 @@ func Build(system []string, homes ...[]string) []string {
 	return single
 }
 
+func findConf(homePath string) (*os.File, error) {
+	const excludeName = "sysrestic.exclude"
+
+	allowedConfs := []string{
+		filepath.Join(homePath, ".config", excludeName),
+		filepath.Join(homePath, fmt.Sprintf(".%s", excludeName)),
+	}
+	for _, path := range allowedConfs {
+		conf, err := os.Open(path)
+		if err != nil {
+			continue
+		}
+
+		s, e := conf.Stat()
+		if e != nil {
+			return nil, fmt.Errorf("inspecting '%s': ", path, e)
+		}
+
+		if s.IsDir() {
+			return nil, fmt.Errorf("'%s' should be a regular file, is a dir", path)
+		}
+
+		return conf, nil
+	}
+
+	return nil, fmt.Errorf(".config/ not top-level dot-file found")
+}
+
 // Read exclude paths for a given user's home directory
 //
 // homePath: is a string indicatging path to single user's home "/home/bob" or
@@ -31,7 +59,7 @@ func Build(system []string, homes ...[]string) []string {
 //
 // Return is a list of absolute paths that should be excluded
 func ParseHomeConf(homePath string) ([]string, error) {
-	conf, err := os.Open(filepath.Join(homePath, ".config/sysrestic.exclude"))
+	conf, err := findConf(homePath)
 	if err != nil {
 		return nil, err
 	}

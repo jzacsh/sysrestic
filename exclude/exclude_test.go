@@ -76,3 +76,7 @@ func TestParseHomeConf(t *testing.T) {
 			i+1, path, exc[i])
 	}
 }
+
+func TestParseHomeConf_AltPath(t *testing.T) {
+	t.Skip("alternative config paths")
+}
