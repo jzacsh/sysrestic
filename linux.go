@@ -7,6 +7,7 @@ import (
 	"./usr"
 )
 
+// TODO(zacsh) figure out how/if to test
 func listUserHomes() ([]string, error) {
 	return nil, fmt.Errorf("listUserHomes() not yet implemented")
 	lines, e := usr.LoadPasswdFrom(usr.PasswdPathLinux)
