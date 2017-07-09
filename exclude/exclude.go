@@ -59,7 +59,7 @@ func findConf(homePath string) (*os.File, error) {
 		return conf, nil
 	}
 
-	return nil, fmt.Errorf(".config/ not top-level dot-file found")
+	return nil, fmt.Errorf("neither .config/ nor top-level dot-file found")
 }
 
 // Read exclude paths for a given user's home directory
