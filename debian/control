@@ -1,0 +1,10 @@
+Package: sysrestic
+Architecture: all
+Maintainer: Jonathan Zacsh
+Depends:
+Priority: optional
+Version: VERSION_HERE
+Homepage: https://github.com/jzacsh/sysrestic
+Description: encodes restic defaults for root backups
+ Provides systemd control & exclude aggregator for root backups of restic.
+ Designed for end-users (read PCs). Requires manually installing restic.
