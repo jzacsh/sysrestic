@@ -17,10 +17,8 @@ $(DEBT): $(OUT)
 	cp $(OUT) $(@)/usr/lib/$(OUT)/bin/
 	cp debian/system.exclude $(@)/usr/lib/$(OUT)/default.exclude
 	cp debian/system.exclude $(@)/etc/$(OUT).exclude
-	printf 'etc/%s.exclude\n' $(OUT) >> $(@)/DEBIAN/conffiles
 	cp debian/systemd.conf $(@)/etc/$(OUT).conf
 	chmod 600 $(@)/etc/$(OUT).conf
-	printf 'etc/%s.conf\n' $(OUT) >> $(@)/DEBIAN/conffiles
 	cp debian/control $(@)/DEBIAN/
 	sed --in-place "s/VERSION_HERE/$(DEBV)/g" $(@)/DEBIAN/control
 	sudo chown -R root:root $(DEBT)
