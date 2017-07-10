@@ -13,23 +13,23 @@ $(DEBT): $(OUT)
 	sudo --remove-timestamp
 	mkdir -p $(@)/usr/bin/
 	mkdir -p $(@)/usr/lib/$(OUT)/bin
-	mkdir -p $(@)/etc
+	mkdir -p $(@)/etc/$(OUT)
 	mkdir -p $(@)/DEBIAN
 	cp $(OUT) $(@)/usr/lib/$(OUT)/bin/
 	cp $(OUT) $(@)/usr/bin/$(OUT)
 	cp debian/system.exclude $(@)/usr/lib/$(OUT)/default.exclude
-	cp debian/system.exclude $(@)/etc/$(OUT).exclude
-	printf 'etc/%s.exclude\n' $(OUT) >> $(@)/DEBIAN/conffiles
-	cp debian/systemd.conf $(@)/etc/$(OUT).conf
-	chmod 600 $(@)/etc/$(OUT).conf
-	printf 'etc/%s.conf\n' $(OUT) >> $(@)/DEBIAN/conffiles
+	cp debian/system.exclude $(@)/etc/$(OUT)/default.exclude
+	cp debian/systemd.conf $(@)/etc/$(OUT)/dummy-systemd.conf
+	echo /etc/$(OUT)/default.exclude >> $(@)/DEBIAN/conffiles
+	echo /etc/$(OUT)/dummy-systemd.conf >> $(@)/DEBIAN/conffiles
+	chmod 600 $(@)/etc/$(OUT)/dummy-systemd.conf
 	cp debian/control $(@)/DEBIAN/
 	sed --in-place "s/VERSION_HERE/$(DEBV)/g" $(@)/DEBIAN/control
 	sudo chown -R root:root $(DEBT)
 
 $(DEBT).deb: $(DEBT)
-	@echo "not yet implemented" >&2
-	@test -d /dev/null
+	dpkg-deb --build $(DEBT)
+	@printf 'success; now consider `sudo` removing %s\n' "$(DEBT)"
 
 test:
 	go test ./...
