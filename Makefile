@@ -11,10 +11,12 @@ $(OUT): $(SRC)
 
 $(DEBT): $(OUT)
 	sudo --remove-timestamp
+	mkdir -p $(@)/usr/bin/
 	mkdir -p $(@)/usr/lib/$(OUT)/bin
 	mkdir -p $(@)/etc
 	mkdir -p $(@)/DEBIAN
 	cp $(OUT) $(@)/usr/lib/$(OUT)/bin/
+	cp $(OUT) $(@)/usr/bin/$(OUT)
 	cp debian/system.exclude $(@)/usr/lib/$(OUT)/default.exclude
 	cp debian/system.exclude $(@)/etc/$(OUT).exclude
 	printf 'etc/%s.exclude\n' $(OUT) >> $(@)/DEBIAN/conffiles
