@@ -4,13 +4,13 @@ import (
 	"path/filepath"
 	"testing"
 
-	"../test"
+	"../testdata"
 )
 
 const fixtureDir string = "../testdata"
 
 func TestBuild(t *testing.T) {
-	test.AssertFixtureDir(t, fixtureDir)
+	testdata.AssertFixtureDir(t, fixtureDir)
 	sysExclude := filepath.Join(fixtureDir, "/etc/sysrestic.exclude")
 
 	expected := []string{
@@ -42,7 +42,7 @@ func TestBuild(t *testing.T) {
 }
 
 func TestParseHomeConf(t *testing.T) {
-	test.AssertFixtureDir(t, fixtureDir)
+	testdata.AssertFixtureDir(t, fixtureDir)
 
 	if _, err := ParseHomeConf("/dev/null"); err == nil {
 		t.Errorf("seem OK with /dev/null")
@@ -76,7 +76,7 @@ func TestParseHomeConf(t *testing.T) {
 }
 
 func TestParseHomeConf_AltPath(t *testing.T) {
-	test.AssertFixtureDir(t, fixtureDir)
+	testdata.AssertFixtureDir(t, fixtureDir)
 
 	janetHome := filepath.Join(fixtureDir, "/home/janet")
 	exc, err := ParseHomeConf(janetHome)

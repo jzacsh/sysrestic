@@ -6,13 +6,13 @@ import (
 	"testing"
 
 	"../file"
-	"../test"
+	"../testdata"
 )
 
 const fixtureDir string = "../testdata"
 
 func TestListUsers(t *testing.T) {
-	test.AssertFixtureDir(t, fixtureDir)
+	testdata.AssertFixtureDir(t, fixtureDir)
 
 	passwd, e := file.ReadLines(filepath.Join(fixtureDir, "/etc/passwd"))
 	if e != nil {

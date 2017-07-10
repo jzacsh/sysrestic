@@ -4,13 +4,13 @@ import (
 	"path/filepath"
 	"testing"
 
-	"../test"
+	"../testdata"
 )
 
 const fixtureDir string = "../testdata"
 
 func TestReadLines(t *testing.T) {
-	test.AssertFixtureDir(t, fixtureDir)
+	testdata.AssertFixtureDir(t, fixtureDir)
 
 	// NOTE: keep synced with testdata/etc/passwd
 	expect := []string{
