@@ -9,7 +9,6 @@ $(OUT): $(SRC)
 
 $(PKG): $(OUT)
 	sudo --remove-timestamp
-	mkdir -p $(@)/usr/bin/
 	mkdir -p $(@)/usr/lib/$(OUT)/bin
 	mkdir -p $(@)/usr/lib/$(OUT)/systemd
 	mkdir -p $(@)/etc/
