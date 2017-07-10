@@ -11,7 +11,7 @@ $(PKG): $(OUT)
 	sudo --remove-timestamp
 	mkdir -p $(@)/usr/bin/
 	mkdir -p $(@)/usr/lib/$(OUT)/bin
-	mkdir -p $(@)/etc/$(OUT)
+	mkdir -p $(@)/etc/
 	mkdir -p $(@)/DEBIAN
 	mkdir -p $(@)/usr/lib/systemd/system
 	mkdir -p $(@)/etc/systemd/system/$(OUT).service.d/
