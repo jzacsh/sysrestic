@@ -7,6 +7,7 @@
 :homeScript: {slocRefBin}/b73710888c23d/share/resticw.sh
 :systemScript: {slocRefBin}/b73710888c23d/share/borgw_system.sh
 :doc_systemd_loadpath: https://www.freedesktop.org/software/systemd/man/systemd.unit.html#Unit%20File%20Load%20Path
+:newerquickdeb: https://blog.packagecloud.io/debian/debuild/packaging/2015/06/08/buildling-deb-packages-with-debuild/
 
 WARNING: this project is <<flux, totally under flux>> as of `4031a8c162765b`
 
@@ -170,3 +171,6 @@ FAIL	_/home/jzacsh/tmp/lxcshare/sysrestic/exclude	0.002s
 Makefile:10: recipe for target 'test' failed
 make: *** [test] Error 1
 ----
+
+.TODO: consider {newerquickdeb}[hacky debian packaging] if `package-like-2013`
+branch falls through
