@@ -8,6 +8,7 @@ import (
 	"os/exec"
 
 	"./exclude"
+	"./file"
 )
 
 type resticCmd struct {
@@ -59,13 +60,7 @@ func (c *resticCmd) parseExcludes() error {
 
 	// TODO(zacsh) remove this block and convert all `string` signatures for
 	// exclude-file handling to `byte`, since we just want ascii
-	var lines []byte
-	for _, ln := range c.Excludes {
-		lines = append(lines, []byte(ln)...)
-		lines = append(lines, '\n')
-	}
-
-	return ioutil.WriteFile(c.UnifiedExcludes, lines, 0644)
+	return file.WriteAsciiLines(c.Excludes, c.UnifiedExcludes)
 }
 
 func (c *resticCmd) runBackup() error {
