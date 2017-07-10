@@ -14,7 +14,7 @@ $(PKG): $(OUT)
 	mkdir -p $(@)/etc/$(OUT)
 	mkdir -p $(@)/DEBIAN
 	mkdir -p $(@)/usr/lib/systemd/system
-	mkdir -p $(@)/etc/systemd/system/sysrestic.service.d/
+	mkdir -p $(@)/etc/systemd/system/$(OUT).service.d/
 	cp $(OUT) $(@)/usr/lib/$(OUT)/bin/
 	cp debian/system.exclude $(@)/usr/lib/$(OUT)/default.exclude
 	cp debian/systemd.conf $(@)/usr/lib/$(OUT)/systemd.conf
