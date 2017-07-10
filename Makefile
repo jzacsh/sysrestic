@@ -16,7 +16,6 @@ $(PKG): $(OUT)
 	mkdir -p $(@)/etc/$(OUT)
 	mkdir -p $(@)/DEBIAN
 	cp $(OUT) $(@)/usr/lib/$(OUT)/bin/
-	cp $(OUT) $(@)/usr/bin/$(OUT)
 	cp debian/system.exclude $(@)/usr/lib/$(OUT)/default.exclude
 	cp debian/system.exclude $(@)/etc/$(OUT)/system.exclude
 	cp debian/systemd.conf $(@)/etc/$(OUT)/dummy-systemd.conf
