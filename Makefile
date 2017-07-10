@@ -19,7 +19,7 @@ $(PKG): $(OUT)
 	cp debian/system.exclude $(@)/usr/lib/$(OUT)/default.exclude
 	cp debian/system.exclude $(@)/etc/$(OUT)/system.exclude
 	cp debian/systemd.conf $(@)/etc/$(OUT)/dummy-systemd.conf
-	echo /etc/$(OUT)/default.exclude >> $(@)/DEBIAN/conffiles
+	echo /etc/$(OUT)/system.exclude >> $(@)/DEBIAN/conffiles
 	echo /etc/$(OUT)/dummy-systemd.conf >> $(@)/DEBIAN/conffiles
 	chmod 600 $(@)/etc/$(OUT)/dummy-systemd.conf
 	cp debian/control $(@)/DEBIAN/
