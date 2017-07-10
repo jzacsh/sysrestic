@@ -1,39 +1,48 @@
 OUT   :=  sysrestic
 DEBV  :=  0.1
-DEBT  :=  $(OUT)-$(DEBV)
+PKG   :=  $(OUT)_$(DEBV)
 SRC   :=  $(shell find ./ -type f -name '*.go')
-
-all: clean test $(OUT)
 
 $(OUT): $(SRC)
 	go build ./...
 	go build -o $@
 
-$(DEBT): $(OUT)
+$(PKG): $(OUT)
 	sudo --remove-timestamp
 	mkdir -p $(@)/usr/lib/$(OUT)/bin
-	mkdir -p $(@)/etc
+	mkdir -p $(@)/usr/lib/$(OUT)/systemd
+	mkdir -p $(@)/etc/
 	mkdir -p $(@)/DEBIAN
+	mkdir -p $(@)/usr/lib/systemd/system/
+	mkdir -p $(@)/etc/systemd/system/$(OUT).service.d
 	cp $(OUT) $(@)/usr/lib/$(OUT)/bin/
 	cp debian/system.exclude $(@)/usr/lib/$(OUT)/default.exclude
 	cp debian/system.exclude $(@)/etc/$(OUT).exclude
-	cp debian/systemd.conf $(@)/etc/$(OUT).conf
-	chmod 600 $(@)/etc/$(OUT).conf
+	cp debian/systemd.conf   $(@)/etc/systemd/system/$(OUT).service.d/systemd.conf
+	cp debian/systemd.conf   $(@)/usr/lib/$(OUT)/systemd/example.conf
+	cp debian/$(OUT).service $(@)/usr/lib/$(OUT)/systemd/$(OUT).service
+	cp debian/$(OUT).timer   $(@)/usr/lib/$(OUT)/systemd/$(OUT).timer
+	cd $(@)/usr/lib/systemd/system/ && ln -s /usr/lib/$(OUT)/systemd/$(OUT).service
+	cd $(@)/usr/lib/systemd/system/ && ln -s /usr/lib/$(OUT)/systemd/$(OUT).timer
+	echo /etc/$(OUT).exclude >> $(@)/DEBIAN/conffiles
+	echo /etc/systemd/system/$(OUT).service.d/systemd.conf >> $(@)/DEBIAN/conffiles
+	chmod 600 $(@)/etc/systemd/system/$(OUT).service.d/systemd.conf
 	cp debian/control $(@)/DEBIAN/
 	sed --in-place "s/VERSION_HERE/$(DEBV)/g" $(@)/DEBIAN/control
-	cp LICENSE $(@)/
-	cp debian/install.sh $(@)/
-	cp debian/Makefile $(@)/
-	sudo chown -R root:root $(DEBT)
+	sudo chown -R root:root $(PKG)
 
-$(DEBT).deb: $(DEBT)
-	@echo "not yet implemented" >&2
-	@test -d /dev/null
+$(PKG).deb: $(PKG)
+	dpkg-deb --build $(PKG)
+	@printf 'success; now consider `sudo` removing %s\n' "$(PKG)"
+
+all: clean test $(OUT)
+
+deb: $(PKG).deb
 
 test:
 	go test ./...
 
 clean:
-	$(RM) -rf $(OUT) $(OUT)-*
+	$(RM) -rf $(OUT) $(OUT)_*
 
-.PHONY: test all clean
+.PHONY: test all clean deb
