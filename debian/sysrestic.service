@@ -4,4 +4,4 @@ Documentation=https://github.com/jzacsh/sysrestic
 
 [Service]
 Type=simple
-ExecStart=/bin/bash -c '/usr/lib/sysrestic/bin/sysrestic "$SYSRESTIC_REPO" /etc/sysrestic/system.exclude'
+ExecStart=/bin/bash -c '/usr/lib/sysrestic/bin/sysrestic "$SYSRESTIC_REPO" /etc/sysrestic.exclude'

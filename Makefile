@@ -14,15 +14,17 @@ $(PKG): $(OUT)
 	mkdir -p $(@)/etc/$(OUT)
 	mkdir -p $(@)/DEBIAN
 	mkdir -p $(@)/usr/lib/systemd/system
+	mkdir -p $(@)/etc/systemd/system/sysrestic.service.d/
 	cp $(OUT) $(@)/usr/lib/$(OUT)/bin/
 	cp debian/system.exclude $(@)/usr/lib/$(OUT)/default.exclude
-	cp debian/system.exclude $(@)/etc/$(OUT)/system.exclude
-	cp debian/systemd.conf   $(@)/etc/$(OUT)/systemd.conf
+	cp debian/systemd.conf $(@)/usr/lib/$(OUT)/systemd.conf
+	cp debian/system.exclude $(@)/etc/$(OUT).exclude
+	cp debian/systemd.conf   $(@)/etc/systemd/system/$(OUT).service.d/systemd.conf
 	cp debian/sysrestic.service $(@)/usr/lib/systemd/system/sysrestic.service
 	cp debian/sysrestic.timer   $(@)/usr/lib/systemd/system/sysrestic.timer
-	echo /etc/$(OUT)/system.exclude >> $(@)/DEBIAN/conffiles
-	echo /etc/$(OUT)/systemd.conf   >> $(@)/DEBIAN/conffiles
-	chmod 600 $(@)/etc/$(OUT)/systemd.conf
+	echo /etc/$(OUT).exclude >> $(@)/DEBIAN/conffiles
+	echo /etc/systemd/system/$(OUT).service.d/systemd.conf >> $(@)/DEBIAN/conffiles
+	chmod 600 $(@)/etc/systemd/system/$(OUT).service.d/systemd.conf
 	cp debian/control $(@)/DEBIAN/
 	sed --in-place "s/VERSION_HERE/$(DEBV)/g" $(@)/DEBIAN/control
 	sudo chown -R root:root $(PKG)
