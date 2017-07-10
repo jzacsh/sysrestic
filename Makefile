@@ -1,6 +1,6 @@
 OUT   :=  sysrestic
 DEBV  :=  0.1
-DEBT  :=  $(OUT)_$(DEBV)
+PKG   :=  $(OUT)_$(DEBV)
 SRC   :=  $(shell find ./ -type f -name '*.go')
 
 all: clean test $(OUT)
@@ -9,7 +9,7 @@ $(OUT): $(SRC)
 	go build ./...
 	go build -o $@
 
-$(DEBT): $(OUT)
+$(PKG): $(OUT)
 	sudo --remove-timestamp
 	mkdir -p $(@)/usr/bin/
 	mkdir -p $(@)/usr/lib/$(OUT)/bin
@@ -25,11 +25,13 @@ $(DEBT): $(OUT)
 	chmod 600 $(@)/etc/$(OUT)/dummy-systemd.conf
 	cp debian/control $(@)/DEBIAN/
 	sed --in-place "s/VERSION_HERE/$(DEBV)/g" $(@)/DEBIAN/control
-	sudo chown -R root:root $(DEBT)
+	sudo chown -R root:root $(PKG)
 
-$(DEBT).deb: $(DEBT)
-	dpkg-deb --build $(DEBT)
-	@printf 'success; now consider `sudo` removing %s\n' "$(DEBT)"
+$(PKG).deb: $(PKG)
+	dpkg-deb --build $(PKG)
+	@printf 'success; now consider `sudo` removing %s\n' "$(PKG)"
+
+deb: $(PKG).deb
 
 test:
 	go test ./...
@@ -37,4 +39,4 @@ test:
 clean:
 	$(RM) -rf $(OUT) $(OUT)_*
 
-.PHONY: test all clean
+.PHONY: test all clean deb
