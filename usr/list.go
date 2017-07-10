@@ -1,9 +1,7 @@
 package usr
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"os/user"
 	"strings"
 )
@@ -12,32 +10,6 @@ import (
 const PasswdPathLinux string = "/etc/passwd"
 
 type UsrList []user.User
-
-// Produces output intended as a `ListUsers` parameter.
-//
-// path should be a filepath, eg: `PasswdPathLinux`
-//
-// contents of path's file are taken to be newline-delimeted, and loaded as
-// elements of the returned slice.
-func LoadPasswdFrom(path string) ([]string, error) {
-	f, e := os.Open(path)
-	if e != nil {
-		return nil, fmt.Errorf("opening: %s", e)
-	}
-
-	s := bufio.NewScanner(f)
-
-	var lines []string
-	for s.Scan() {
-		lines = append(lines, s.Text())
-	}
-
-	if e := s.Err(); e != nil {
-		return nil, fmt.Errorf("reading: %s", e)
-	}
-
-	return lines, nil
-}
 
 // Parses a /etc/passwd formatted line, and produces os/user.User object
 // eg: given "alice:x:1000:1000:Alice,,,:/home/alice:/bin/bash", produces:

@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"strconv"
 
+	"./file"
 	"./usr"
 )
 
 // TODO(zacsh) figure out how/if to test
 func listHumanUserHomes_Linux() ([]string, error) {
-	lines, e := usr.LoadPasswdFrom(usr.PasswdPathLinux)
+	lines, e := file.ReadLines(usr.PasswdPathLinux)
 	if e != nil {
 		return nil, fmt.Errorf("loading %s: %s", usr.PasswdPathLinux, e)
 	}
