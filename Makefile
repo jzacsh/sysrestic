@@ -18,7 +18,7 @@ $(DEBT): $(OUT)
 	cp $(OUT) $(@)/usr/lib/$(OUT)/bin/
 	cp $(OUT) $(@)/usr/bin/$(OUT)
 	cp debian/system.exclude $(@)/usr/lib/$(OUT)/default.exclude
-	cp debian/system.exclude $(@)/etc/$(OUT)/default.exclude
+	cp debian/system.exclude $(@)/etc/$(OUT)/system.exclude
 	cp debian/systemd.conf $(@)/etc/$(OUT)/dummy-systemd.conf
 	echo /etc/$(OUT)/default.exclude >> $(@)/DEBIAN/conffiles
 	echo /etc/$(OUT)/dummy-systemd.conf >> $(@)/DEBIAN/conffiles

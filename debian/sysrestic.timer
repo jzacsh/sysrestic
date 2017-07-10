@@ -1,5 +1,5 @@
 [Unit]
-Description=Periodically backup entire system
+Description=Periodically backup via sysrestic
 
 [Timer]
 OnUnitActiveSec=90m
