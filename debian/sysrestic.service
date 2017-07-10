@@ -3,5 +3,5 @@ Description=System-wide backups to a restic repo with excludes for everyone
 Documentation=https://github.com/jzacsh/sysrestic
 
 [Service]
-Type=oneshot
+Type=simple
 ExecStart=/bin/bash -c '/usr/lib/sysrestic/bin/sysrestic "$SYSRESTIC_REPO" /etc/sysrestic/system.exclude'
