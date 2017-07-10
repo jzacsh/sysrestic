@@ -13,17 +13,17 @@ $(PKG): $(OUT)
 	mkdir -p $(@)/usr/lib/$(OUT)/systemd
 	mkdir -p $(@)/etc/
 	mkdir -p $(@)/DEBIAN
-	mkdir -p $(@)/usr/lib/systemd/system
-	mkdir -p $(@)/etc/systemd/system/$(OUT).service.d/
+	mkdir -p $(@)/usr/lib/systemd/system/
+	mkdir -p $(@)/etc/systemd/system/$(OUT).service.d
 	cp $(OUT) $(@)/usr/lib/$(OUT)/bin/
 	cp debian/system.exclude $(@)/usr/lib/$(OUT)/default.exclude
 	cp debian/system.exclude $(@)/etc/$(OUT).exclude
-	cp debian/systemd.conf $(@)/usr/lib/$(OUT)/systemd/example.conf
-	cp debian/systemd.conf $(@)/etc/systemd/system/$(OUT).service.d/systemd.conf
-	cp debian/sysrestic.service $(@)/usr/lib/$(OUT)/systemd/sysrestic.service
-	cp debian/sysrestic.timer   $(@)/usr/lib/$(OUT)/systemd/sysrestic.timer
-	cd $(@)/usr/lib/systemd/system/ && ln -s /usr/lib/$(OUT)/systemd/sysrestic.service
-	cd $(@)/usr/lib/systemd/system/ && ln -s /usr/lib/$(OUT)/systemd/sysrestic.timer
+	cp debian/systemd.conf   $(@)/etc/systemd/system/$(OUT).service.d/systemd.conf
+	cp debian/systemd.conf   $(@)/usr/lib/$(OUT)/systemd/example.conf
+	cp debian/$(OUT).service $(@)/usr/lib/$(OUT)/systemd/$(OUT).service
+	cp debian/$(OUT).timer   $(@)/usr/lib/$(OUT)/systemd/$(OUT).timer
+	cd $(@)/usr/lib/systemd/system/ && ln -s /usr/lib/$(OUT)/systemd/$(OUT).service
+	cd $(@)/usr/lib/systemd/system/ && ln -s /usr/lib/$(OUT)/systemd/$(OUT).timer
 	echo /etc/$(OUT).exclude >> $(@)/DEBIAN/conffiles
 	echo /etc/systemd/system/$(OUT).service.d/systemd.conf >> $(@)/DEBIAN/conffiles
 	chmod 600 $(@)/etc/systemd/system/$(OUT).service.d/systemd.conf
