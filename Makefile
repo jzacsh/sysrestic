@@ -13,10 +13,13 @@ $(PKG): $(OUT)
 	mkdir -p $(@)/usr/lib/$(OUT)/bin
 	mkdir -p $(@)/etc/$(OUT)
 	mkdir -p $(@)/DEBIAN
+	mkdir -p $(@)/usr/lib/systemd/system
 	cp $(OUT) $(@)/usr/lib/$(OUT)/bin/
 	cp debian/system.exclude $(@)/usr/lib/$(OUT)/default.exclude
 	cp debian/system.exclude $(@)/etc/$(OUT)/system.exclude
 	cp debian/systemd.conf   $(@)/etc/$(OUT)/systemd.conf
+	cp debian/sysrestic.service $(@)/usr/lib/systemd/system/sysrestic.service
+	cp debian/sysrestic.timer   $(@)/usr/lib/systemd/system/sysrestic.timer
 	echo /etc/$(OUT)/system.exclude >> $(@)/DEBIAN/conffiles
 	echo /etc/$(OUT)/systemd.conf   >> $(@)/DEBIAN/conffiles
 	chmod 600 $(@)/etc/$(OUT)/systemd.conf
