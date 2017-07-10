@@ -17,11 +17,11 @@ $(PKG): $(OUT)
 	mkdir -p $(@)/DEBIAN
 	cp $(OUT) $(@)/usr/lib/$(OUT)/bin/
 	cp debian/system.exclude $(@)/usr/lib/$(OUT)/default.exclude
-	cp debian/system.exclude $(@)/etc/$(OUT)/system.exclude
-	cp debian/systemd.conf   $(@)/etc/$(OUT)/dummy-systemd.conf
-	echo /etc/$(OUT)/system.exclude >> $(@)/DEBIAN/conffiles
-	echo /etc/$(OUT)/dummy-systemd.conf >> $(@)/DEBIAN/conffiles
-	chmod 600 $(@)/etc/$(OUT)/dummy-systemd.conf
+	cp debian/system.exclude $(@)/etc/$(OUT)/exclude
+	cp debian/systemd.conf   $(@)/etc/$(OUT)/systemd.conf
+	echo /etc/$(OUT)/exclude >> $(@)/DEBIAN/conffiles
+	echo /etc/$(OUT)/systemd.conf   >> $(@)/DEBIAN/conffiles
+	chmod 600 $(@)/etc/$(OUT)/systemd.conf
 	cp debian/control $(@)/DEBIAN/
 	sed --in-place "s/VERSION_HERE/$(DEBV)/g" $(@)/DEBIAN/control
 	sudo chown -R root:root $(PKG)
