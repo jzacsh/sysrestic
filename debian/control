@@ -1,4 +1,5 @@
 Package: sysrestic
+Section: utils
 Architecture: all
 Maintainer: Jonathan Zacsh
 Depends:
