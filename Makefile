@@ -3,8 +3,6 @@ DEBV  :=  0.1
 PKG   :=  $(OUT)_$(DEBV)
 SRC   :=  $(shell find ./ -type f -name '*.go')
 
-all: clean test $(OUT)
-
 $(OUT): $(SRC)
 	go build ./...
 	go build -o $@
@@ -29,6 +27,8 @@ $(PKG): $(OUT)
 $(PKG).deb: $(PKG)
 	dpkg-deb --build $(PKG)
 	@printf 'success; now consider `sudo` removing %s\n' "$(PKG)"
+
+all: clean test $(OUT)
 
 deb: $(PKG).deb
 
