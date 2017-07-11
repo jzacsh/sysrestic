@@ -101,7 +101,7 @@ $ systemctl enable sysrestic.{timer,service} # <1>
 $ systemctl start sysrestic.timer
 $ systemctl status sysrestic.{timer,service}
 ----
-<2> here & below are vanilla commands; part of regular usage
+<1> here & below are vanilla commands; part of regular usage
 
 === Usage
 
