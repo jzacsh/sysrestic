@@ -18,6 +18,8 @@ type resticCmd struct {
 	Err             *log.Logger
 	UnifiedExcludes string
 	Excludes        []string
+	Users           int
+	UserExcludes    int
 }
 
 func (c *resticCmd) String() string {
@@ -31,6 +33,7 @@ func (c *resticCmd) parseExcludes() error {
 	if e != nil {
 		return fmt.Errorf("finding $HOMEs: %v", e)
 	}
+	c.Users = len(homes)
 
 	var excs [][]string
 	for _, home := range homes {
@@ -39,6 +42,7 @@ func (c *resticCmd) parseExcludes() error {
 			return fmt.Errorf("parsing %s excludes: %v", home, e)
 		}
 		excs = append(excs, excludes)
+		c.UserExcludes++
 	}
 
 	unified, e := exclude.Build(c.ExcludeSysPath, excs...)
@@ -90,9 +94,18 @@ func main() {
 		lg.Fatalf("excludes: %v\n", e)
 	}
 
-	fmt.Printf("%d excludes written to %s\n", len(r.Excludes), r.UnifiedExcludes)
+	fmt.Printf(
+		"%d excludes from %d of %d users written to %s\n",
+		r.Excludes, r.UserExcludes, r.Users, r.UnifiedExcludes)
 
 	if e := r.runBackup(); e != nil {
 		r.Err.Fatalf("restic: %v\n", e)
 	}
+
+	fmt.Printf("Restic exited OK. Cleaning up...")
+	if e := os.Remove(r.UnifiedExcludes); e != nil {
+		fmt.Printf("\n")
+		r.Err.Fatalf("tmpfile removal: %v\n", e)
+	}
+	fmt.Printf(" done.\n")
 }
