@@ -1,4 +1,5 @@
 = sysrestic: encapsulate restic & your laptop
+:toc:
 :LVMencryption: https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system
 :slocRefBin: https://github.com/jzacsh/bin/blob
 :homeScript: {slocRefBin}/b73710888c23d/share/resticw.sh
@@ -7,7 +8,9 @@
 :resticurl: https://restic.github.io
 :whatisrepo: https://restic.readthedocs.io/en/stable/#quick-start
 :excludes: https://restic.readthedocs.io/en/stable/manual.html?highlight=exclude
+:resticusage: https://restic.github.io/#quickstart
 :cistatus: https://travis-ci.org/jzacsh/sysrestic
+:jzacshegexclude: https://github.com/jzacsh/dotfiles/blob/94d0f80eabe/.config/sysrestic.exclude
 
 Facilitates system-wide backup for an encrypted drive on a personal computer,
 using {resticurl}[`restic`].
@@ -90,6 +93,7 @@ $ find /usr/lib/sysrestic/ \
   /etc/systemd/system/sysrestic* -exec file {} +;
 ----
 
+[[systemwideconf]]
 .configure: set `$SYSRESTIC_REPO` & `$RESTIC_PASSWORD`
 ----
 $ $EDITOR /etc/systemd/system/sysrestic.service.d/systemd.conf
@@ -108,8 +112,43 @@ $ systemctl status sysrestic.{timer,service}
 
 == Usage
 
-Systemd -- ie: `Systemctl` -- is now your interface for this repository's
-impact on your machine.
+=== One-Time Configurations
+
+The idea of this repo is backups run without you're being involved. Aside from
+<<systemwideconf, system-wide configuration>> already mentioned, you'll want to
+make your own exclude file in `$HOME/.config/sysrestic.exclude` or
+`$HOME/.sysrestic.exclude`. {jzacshegexclude}[Eg]:
+
+----
+back/local
+.android/
+.cinnamon/
+.cache/
+.config/google-chrome/
+.mozilla/firefox/
+.gnome/apps/
+.gradle/
+.npm/
+.thumbnails/
+.tor-browser*/
+.opam/
+.local/share/lxc/*/rootfs
+tmp/
+usr/local/vm/
+usr/local/bin/
+----
+
+That's it. Combining all exclude files, across all `$HOME` dirs on your system,
+together with your system exclude file _(`/etc/sysrestic.exclude`)_  is really
+<<sysrestichelp, all that `sysrestic` does>>, aside from finally calling
+`restic` on your behalf.
+
+=== Restic & Systemd
+
+Other than such period configuration changes, Systemd is now your interface for
+this repository's impact on your machine. Of course the usual applies
+{resticusage}[as an end-user of restic], eg, poke at your backups:
+`sudo restic -r /srv/sysrestic/restic mount /tmp/sysbackups`
 
 .modify frequency of backups
 ----
@@ -161,7 +200,16 @@ Jul 11 14:45:54 mylaptop bash[32072]: 25 excludes from 1 of 1 users written to /
 Jul 11 14:45:55 mylaptop bash[32072]: scan [/]
 Jul 11 14:46:23 mylaptop bash[32072]: [0:28] 103269 directories, 566652 files, 22.123 GiB
 Jul 11 14:46:23 mylaptop bash[32072]: scanned 103269 directories, 566652 files in 0:28
+Jul 11 15:17:51 mylaptop bash[32072]: can not obtain extended attribute system.posix_acl_access for /sys:
+Jul 11 15:17:51 mylaptop bash[32072]: can not obtain extended attribute system.posix_acl_default for /sys:
+Jul 11 15:29:42 mylaptop bash[32072]: [43:18] 100.00%  0B/s  43.439 GiB / 22.123 GiB  674476 / 669921 items  0 errors  ETA 0:00
+Jul 11 15:29:42 mylaptop bash[32072]: duration: 43:18, 8.72MiB/s
+Jul 11 15:29:42 mylaptop bash[32072]: snapshot db8f7eff saved
+Jul 11 15:29:42 mylaptop bash[32072]: Restic exited OK. Cleaning up... done.
 ----
+
+NOTE: duration of the above backup, in my `journalctl` output, was during a
+*first* backup _(ie: longer than usual)_.
 
 .control backups
 ----
@@ -222,6 +270,42 @@ $ make clean
 rm -f -rf sysrestic sysrestic_*
 
 # snipped ... same as above
+----
+
+Though I don't see any reason why one would find and call the `sysrestic` tool
+themselves, here's what its help output would say:
+
+[[sysrestichelp]]
+----
+$ sysrestic --help
+sysrestic - an exclude-file joiner for system backups with restic
+
+Synopsis:
+  sysreestic [help] RESTIC_REPO EXCLUDE_FILE
+
+Description:
+  Execs to restic[1] to backup / to RESTIC_REPO path with an automatically
+  built list for restic's --exclude-file option.
+
+Outline:
+  1. visits every $HOME on the system
+  2. reads said $HOME's ~/.config/sysrestic.exclude or ~/.sysrestic.exclude
+  3. creates a new exclude-file, unifying all $HOME's excludes w/EXCLUDE_FILE
+  4. shells out to restic:
+       restic backup \
+          --repo RESTIC_REPO \
+          --exclude-file /path/to/temporary/unified/exclude-list \
+          /
+
+Reading Exclude Files:
+  For both system and users' exclude files, empty files are okay.
+
+  All lines in a user's exclude file are read as relative to their home.
+  Leading slashes are ignored. Not much care has been taken beyond this to
+  prevent bad things (eg: users may be able to exclude important files that do
+  not belong to them using hard-link walks, like "../../../").
+
+[1]: https://restic.github.io
 ----
 
 NOTE: until `{golangforkat}`, this project was originally a documentation effort
