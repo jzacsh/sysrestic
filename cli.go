@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/jzacsh/sysrestic/file"
 )
 
 const defaultBackupTarget string = "/"
@@ -43,45 +45,6 @@ func looksLikeHelp(arg string) bool {
 		arg == "help" || arg == "-help" || arg == "--help"
 }
 
-func getReadableStat(path string) (os.FileInfo, error) {
-	f, e := os.Open(path)
-	if e != nil {
-		return nil, e
-	}
-	defer f.Close()
-	s, e := f.Stat()
-	if e != nil {
-		return nil, e
-	}
-	return s, nil
-}
-
-func isReadableDir(path string) (bool, error) {
-	s, e := getReadableStat(path)
-	if e != nil {
-		return false, e
-	}
-
-	isDir := s.IsDir()
-	if isDir {
-		return true, nil
-	}
-	return false, fmt.Errorf("%s not a directory", path)
-}
-
-func isReadableFile(path string) (bool, error) {
-	s, e := getReadableStat(path)
-	if e != nil {
-		return false, e
-	}
-
-	isFile := !s.IsDir()
-	if isFile {
-		return true, nil
-	}
-	return false, fmt.Errorf("%s is a directory", path)
-}
-
 func parseCli(args []string) (*resticCmd, error) {
 	if len(args) != 2 {
 		if len(args) == 1 && looksLikeHelp(args[0]) {
@@ -96,10 +59,10 @@ func parseCli(args []string) (*resticCmd, error) {
 		ExcludeSysPath: strings.TrimSpace(args[1]),
 		BackupTarget:   defaultBackupTarget,
 	}
-	if is, e := isReadableDir(r.ResticRepoPath); !is {
+	if is, e := file.IsReadableDir(r.ResticRepoPath); !is {
 		return nil, fmt.Errorf("RESTIC_REPO not a readable dir: %s", e)
 	}
-	if is, e := isReadableFile(r.ExcludeSysPath); !is {
+	if is, e := file.IsReadableFile(r.ExcludeSysPath); !is {
 		return nil, fmt.Errorf("EXCLUDE_FILE not a readable file: %s", e)
 	}
 
