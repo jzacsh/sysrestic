@@ -60,7 +60,7 @@ func (c *resticCmd) parseExcludes() error {
 
 	// TODO(zacsh) remove this block and convert all `string` signatures for
 	// exclude-file handling to `byte`, since we just want ascii
-	return file.WriteAsciiLines(c.Excludes, c.UnifiedExcludes)
+	return file.WriteASCIILines(c.Excludes, c.UnifiedExcludes)
 }
 
 func (c *resticCmd) runBackup() error {
