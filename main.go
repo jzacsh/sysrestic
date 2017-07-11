@@ -96,7 +96,7 @@ func main() {
 
 	fmt.Printf(
 		"%d excludes from %d of %d users written to %s\n",
-		r.Excludes, r.UserExcludes, r.Users, r.UnifiedExcludes)
+		len(r.Excludes), r.UserExcludes, r.Users, r.UnifiedExcludes)
 
 	if e := r.runBackup(); e != nil {
 		r.Err.Fatalf("restic: %v\n", e)
