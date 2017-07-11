@@ -12,6 +12,7 @@
 :resticusage: https://restic.github.io/#quickstart
 :cistatus: https://travis-ci.org/jzacsh/sysrestic
 :jzacshegexclude: https://github.com/jzacsh/dotfiles/blob/94d0f80eabe/.config/sysrestic.exclude
+:systemdmanlimit: https://www.freedesktop.org/software/systemd/man/systemd.exec.html#LimitCPU=
 
 Facilitates system-wide backup for an encrypted drive on a personal computer,
 using {resticurl}[`restic`].
@@ -254,6 +255,14 @@ $ systemctl stop sysrestic.timer
 $ $EDITOR /etc/systemd/system/sysrestic.service.d/systemd.conf # <1>
 ----
 <1> specifically, change the `$SYSRESTIC_REPO` value
+
+.tweak resources restic gets
+----
+$ printf '%s\n' 'CPUQuota=20%' LimitNICE=8 \
+             >> /etc/systemd/system/sysrestic.service # <1>
+$ systemctl daemon-reload
+----
+<1> read more about your options {systemdmanlimit}[in the systemd manual]
 
 == Contributing
 
