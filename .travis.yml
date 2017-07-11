@@ -1,4 +1,4 @@
-script: make all deb
+script: make all
 language: go
 go:
   - 1.8.x

@@ -7,9 +7,12 @@
 :resticurl: https://restic.github.io
 :whatisrepo: https://restic.readthedocs.io/en/stable/#quick-start
 :excludes: https://restic.readthedocs.io/en/stable/manual.html?highlight=exclude
+:cistatus: https://travis-ci.org/jzacsh/sysrestic
 
 Facilitates system-wide backup for an encrypted drive on a personal computer,
 using {resticurl}[`restic`].
+
+image:{cistatus}.svg?branch=master["Build Status", link="{cistatus}"]
 
 == Motivation
 
