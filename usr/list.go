@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Location on GNU/Linux systems where user-data is stored
+// PasswdPathLinux is standard path on GNU/Linux systems to user-data
 const PasswdPathLinux string = "/etc/passwd"
 
 // Parses a /etc/passwd formatted line, and produces os/user.User object
