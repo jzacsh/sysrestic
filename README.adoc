@@ -227,10 +227,9 @@ Tue 2017-07-11 16:15:54 EDT  1h 15min left Tue 2017-07-11 14:16:48 EDT  43min ag
 Pass --all to see loaded but inactive timers, too.
 ----
 
-.disable upcoming backups
+.stop upcoming backups
 ----
 $ systemctl stop sysrestic.timer
-$ systemctl disable sysrestic.timer
 ----
 
 .update if you've moved your `restic` repo
