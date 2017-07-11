@@ -89,9 +89,25 @@ $ sudo dpkg -i sysrestic_0.1.deb # <2>
 .if you're curious
 ----
 $ find /usr/lib/sysrestic/ \
-  /etc/sysrestic* \
-  /usr/lib/systemd/system/sysrestic* \
-  /etc/systemd/system/sysrestic* -exec file {} +;
+       /etc/sysrestic* \
+       /usr/lib/systemd/system/sysrestic* \
+       /etc/systemd/system/sysrestic* -exec file {} +;
+
+/usr/lib/systemd/system/sysrestic.timer:              symbolic link to /usr/lib/sysrestic/systemd/sysrestic.timer
+/usr/lib/systemd/system/sysrestic.service:            symbolic link to /usr/lib/sysrestic/systemd/sysrestic.service
+/usr/lib/sysrestic/:                                  directory
+/usr/lib/sysrestic/systemd:                           directory
+/usr/lib/sysrestic/systemd/sysrestic.timer:           ASCII text
+/usr/lib/sysrestic/systemd/sysrestic.service:         ASCII text
+/usr/lib/sysrestic/systemd/example.conf:              ASCII text
+/usr/lib/sysrestic/default.exclude:                   ASCII text
+/usr/lib/sysrestic/bin:                               directory
+/usr/lib/sysrestic/bin/sysrestic:                     ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, not stripped
+/etc/systemd/system/sysrestic.timer:                  symbolic link to /usr/lib/sysrestic/systemd/sysrestic.timer
+/etc/systemd/system/sysrestic.service:                symbolic link to /usr/lib/sysrestic/systemd/sysrestic.service
+/etc/systemd/system/sysrestic.service.d:              directory
+/etc/systemd/system/sysrestic.service.d/systemd.conf: regular file, no read permission
+/etc/sysrestic.exclude:                               ASCII text
 ----
 
 [[systemwideconf]]
