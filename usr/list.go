@@ -9,8 +9,6 @@ import (
 // Location on GNU/Linux systems where user-data is stored
 const PasswdPathLinux string = "/etc/passwd"
 
-type UsrList []user.User
-
 // Parses a /etc/passwd formatted line, and produces os/user.User object
 // eg: given "alice:x:1000:1000:Alice,,,:/home/alice:/bin/bash", produces:
 //   user.User{
@@ -53,8 +51,8 @@ func parseUserLine(line string) (*user.User, error) {
 //
 // lines is the contents of /etc/passwd (or some similar output) where each
 // element was originally distinguished by a line-break.
-func ListUsers(lines []string) (UsrList, error) {
-	var list UsrList
+func ListUsers(lines []string) ([]user.User, error) {
+	var list []user.User
 
 	for i, line := range lines {
 		u, e := parseUserLine(line)
