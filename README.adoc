@@ -1,177 +1,176 @@
-= system-wide backup for encrypted root
+= sysrestic: encapsulate restic & your laptop
 :toc:
-:toclevels: 5
 :LVMencryption: https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system
-:sysBackupRsync: https://gist.github.com/jzacsh/cf6d5a50449b44db2db334c33535a111
 :slocRefBin: https://github.com/jzacsh/bin/blob
 :homeScript: {slocRefBin}/b73710888c23d/share/resticw.sh
 :systemScript: {slocRefBin}/b73710888c23d/share/borgw_system.sh
-:doc_systemd_loadpath: https://www.freedesktop.org/software/systemd/man/systemd.unit.html#Unit%20File%20Load%20Path
-:newerquickdeb: https://blog.packagecloud.io/debian/debuild/packaging/2015/06/08/buildling-deb-packages-with-debuild/
 :golangforkat: 4031a8c162765b
+:resticurl: https://restic.github.io
+:whatisrepo: https://restic.readthedocs.io/en/stable/#quick-start
+:excludes: https://restic.readthedocs.io/en/stable/manual.html?highlight=exclude
 
-WARNING: this project is <<flux, totally under flux>> as of `{golangforkat}`
+Facilitates system-wide backup for an encrypted drive on a personal computer,
+using {resticurl}[`restic`].
 
-these are files that facilitate system-wide backup for an encrypted drive. that
-is: we assume `/` is {LVMencryption}[encrypted somehow]. Practically this is
-just a script and some systemd unit-file to run {sysBackupRsync}[my common
-rsync].
+== Motivation
 
-... *j/k* this is now using `restic` _(ie: not an rsync command -- but an
-encrypted backup)_
+This project provides two things for my personal use footnoteref:[usecase, I
+assume `/` is {LVMencryption}[encrypted somehow] and I just want local-only
+backups for my sanity but not for production robustness]:
 
-.ultimate goal
-. note: *NOT* yet done:
-. to just encode laptop `restic` backups as a debian package i can
-forget/inspect later just like other things on my computer
+1. Debian *package*: a `.deb` for me to `dpkg -i` and forget about
+2. `sysrestic` *exclude-files* logic: a local binary to aggregate some ASCII
+    {excludes}[excludes] files for me, in a semi-predictable way
 
-.tl;dr of the *what* is automated
+== Installing & Updating
+
+Everything below assumes you:
+
+a. know what the `restic` {resticurl}[backup program] is; go check it out!
+b. are on Debian...ish
+c. have a `restic` {whatisrepo}[repo] somewhere on local disk +
+  _(or plan to `restic init` one soon...)_
+
+
+.clean slate; skip if no git repo
 ----
-$ build-exclude ./exclude-system ./exclude.jzacsh > exclude.txt
-$ RESTIC_PASSWORD=... restic backup \
-    --repo /srv/jons-sys-backups/restic \
-    --exclude-file ./exclude.txt \
-    /
-----
-
-== overview: usage & how to
-
-First some pre-requisites/setup, then the regular usage of this repo.
-
-=== one time: prerequisites
-
-.TODOs for this section:
-. consider replacing `.conf` explanations with some final step like `systemctl
-edit sysbackup.service`
-.. <<step3, step 3>>'s `sysbackup.service.d` not confirmed; perhaps has to be
-manually setup over in the `/etc/` paralell _(ie: maybe `systemctl enable`
-doesn't do the linking on this type of file)_
-
-[[step1]]
-==== 1: start a "repo" for `restic`
-
-.rest calls its backup storage a "repo"
-----
-$ mkdir -p /srv/sysbackup/restic
-$ restic init --repo /srv/sysbackup/restic
-  # .. prompts you to create a password and such
+$ git clone github.com/jzacsh/sysrestic && cd sysrestic/
+$ git archive --output /tmp/sysrestic.tgz master --prefix sysrestic/
+$ cd /tmp/ && tar -xf sysrestic.tgz && cd sysrestic
 ----
 
-==== 2: pick a system dir for settings
-
-Now just pick a system directory for your settings -- mostly files from this
-repository -- and unpack into that directory. As follows.
-
-.Pick a directory, eg: `/usr/local/sysbackup/`
+.build
 ----
-$ mkdir /usr/local/sysbackup/
-----
-
-.Files to unpack there:
-1. need *your own* versions of `./exclude-system`, `./exclude.jzacsh` +
-  _(at least of the latter file, if you want to exclude anything in `$HOME`)_
-2. You MUST create a file, with an `.conf` extension, and contents:
-----
-[Service]
-Environment="PATH=/usr/local/sysbackup/:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin" <1>
-Environment="RESTIC_PASSWORD=YOUR_RESTIC_REPO_PASSWORD" <2>
-----
-<1> TODO can we can APPEND? ie: mv almost all this line to main `*.service` file
-<2> obvz, `YOUR_RESTIC_REPO_PASSWORD` is replaced by <<step1, step 1>> password
-
-WARNING: `./install-sysbackup` might _look_ like it does this unpacking, but
-beware: it isn't parameterized, or very thoughtfully written; and you still need
-to hand create a `.conf` file anyway
-
-.To recap, you now have something like:
-----
-$ find /usr/local/sysbackup/ -printf '%P\n'
-sysbackup
-build-exclude
-exclude-system
-exclude.jzacsh
-sysbackup.service
-sysbackup.timer
-sysbackup.conf
-
-$ find /srv/sysbackup/restic -mindepth 1 -maxdepth 1 -printf '%P\n'
-keys
-config
-data
-snapshots
-index
-locks
+$ make deb
+go build ./...
+go build -o sysrestic
+sudo --remove-timestamp
+mkdir -p sysrestic_0.1/usr/lib/sysrestic/bin
+mkdir -p sysrestic_0.1/usr/lib/sysrestic/systemd
+mkdir -p sysrestic_0.1/etc/
+mkdir -p sysrestic_0.1/DEBIAN
+mkdir -p sysrestic_0.1/usr/lib/systemd/system/
+mkdir -p sysrestic_0.1/etc/systemd/system/sysrestic.service.d
+cp sysrestic sysrestic_0.1/usr/lib/sysrestic/bin/
+cp debian/system.exclude sysrestic_0.1/usr/lib/sysrestic/default.exclude
+cp debian/system.exclude sysrestic_0.1/etc/sysrestic.exclude
+cp debian/systemd.conf   sysrestic_0.1/etc/systemd/system/sysrestic.service.d/systemd.conf
+cp debian/systemd.conf   sysrestic_0.1/usr/lib/sysrestic/systemd/example.conf
+cp debian/sysrestic.service sysrestic_0.1/usr/lib/sysrestic/systemd/sysrestic.service
+cp debian/sysrestic.timer   sysrestic_0.1/usr/lib/sysrestic/systemd/sysrestic.timer
+cd sysrestic_0.1/usr/lib/systemd/system/ && ln -s /usr/lib/sysrestic/systemd/sysrestic.service
+cd sysrestic_0.1/usr/lib/systemd/system/ && ln -s /usr/lib/sysrestic/systemd/sysrestic.timer
+echo /etc/sysrestic.exclude >> sysrestic_0.1/DEBIAN/conffiles
+echo /etc/systemd/system/sysrestic.service.d/systemd.conf >> sysrestic_0.1/DEBIAN/conffiles
+chmod 600 sysrestic_0.1/etc/systemd/system/sysrestic.service.d/systemd.conf
+cp debian/control sysrestic_0.1/DEBIAN/
+sed --in-place "s/VERSION_HERE/0.1/g" sysrestic_0.1/DEBIAN/control
+sudo chown -R root:root sysrestic_0.1
+[sudo] password for jzacsh:
+sudo fakeroot dpkg-deb --build sysrestic_0.1
+dpkg-deb: building package 'sysrestic' in 'sysrestic_0.1.deb'.
+success; now consider `sudo` removing sysrestic_0.1
 ----
 
-[[step3]]
-==== 3: tell systemd
-
-Finally, hand off to systemd _(ie: `/usr/lib/systemd/...` and co)_
-
-NOTE: these last commands are here for tranpsarency, you can instead inspect and
-call a script to do this: `./install-systemd /usr/local/sysbackup/`
-
-.root shell
+.install
 ----
-$ mkdir /usr/lib/systemd/system/sysbackup.service.d/
-$ ln -sv /usr/local/sysbackup/sysbackup.conf \
-         /usr/lib/systemd/system/sysbackup.service.d/
-$ mkdir /usr/lib/systemd/system/
-$ for unit in /usr/local/sysbackup/sysbackup.{timer,service}; do
-    ln -sv "$unit" /usr/lib/systemd/system/ # <1>
-  done
-$ systemctl daemon-reload # <2>
-$ systemctl enable sysbackup.{timer,service}
-$ systemctl show sysbackup.service | grep Environment # <3>
-$ systemctl start sysbackup.timer &&
-  systemctl start sysbackup.service <4>
+$ sudo rm sysrestic_0.1/ -rf # <1>
+$ sudo dpkg -i sysrestic_0.1.deb # <2>
 ----
-<1> per {doc_systemd_loadpath}[unit file load path] documetnation
-<2> should be run anytime you change systemd files _(eg: if this repo is updated
-and you update the installed files as well)_
-<3> *ensure* this outputs what you expect from your `.conf` file
-<4> TODO needs to be double-checked; not sure this is the right order to ensure
-the timer gets queued correctly
+<1> don't forget to cleanup my `root` mess
+<2> *this* is the actual install
 
-=== regular usage
-
-.see what is happening
+.if you're curious
 ----
-$ systemctl status sysbackup.service
-$ journalctl --follow -u sysbackup.service -u sysbackup.timer
+$ find /usr/lib/sysrestic/ \
+  /etc/sysrestic* \
+  /usr/lib/systemd/system/sysrestic* \
+  /etc/systemd/system/sysrestic* -exec file {} +;
 ----
 
-.uninstalling should be as simple as
+.systemd: tell your machine
 ----
-$ uninstall-sysbackup
+$ $EDITOR /etc/systemd/system/sysrestic.service.d/systemd.conf # <1>
+$ systemctl daemon-reload
+$ systemctl enable sysrestic.{timer,service} # <2>
+$ systemctl start sysrestic.timer
+$ systemctl status sysrestic.{timer,service}
+----
+<1> critical: set `$SYSRESTIC_REPO` and `$RESTIC_PASSWORD`
+<2> here & below are vanilla commands; part of regular usage
+
+=== Usage
+
+Systemd -- ie: `Systemctl` -- is now your interface for this repository's
+impact on your machine.
+
+.modify frequency of backups
+----
+$ $EDITOR /etc/systemd/system/sysrestic.timer
 ----
 
-NOTE: this is a mish-mosh of {systemScript}[an old system-wide backup] and
-{homeScript}[a `$HOME` backup]
-
-[[flux]]
-== golang rewrite
-
-.make targets: `all`, `clean`, `test`, `sysrestic`
+.check latest status
 ----
-$ make  # all is default
-rm -f -rf sysrestic
+$ systemctl status sysrestic.{timer,service}
+----
+
+.watch logs
+----
+$ journalctl --pager-end --follow sysrestic.service
+----
+
+.control backups
+----
+$ systemctl stop sysrestic.service
+$ systemctl restart sysrestic.service
+----
+
+.disable upcoming backups
+----
+$ systemctl disable sysrestic.timer
+----
+
+.update if you've moved your `restic` repo
+----
+$ $EDITOR /etc/systemd/system/sysrestic.service.d/systemd.conf # <1>
+----
+<1> specifically, change the `$SYSRESTIC_REPO` value
+
+== Contributing
+
+Despite remarks above, that this serves a highly personal use to my own laptop,
+I'd be *happy* to patch or accept patches to make this useful for you too! If
+you want a quick overview on *what* is installed, this README as of
+`{golangforkat}` walked through *exactly* what I tried to encode into the
+debian package.
+
+=== `sysrestic` command
+
+Most of this repo deals with the small `sysrestic` tool. Debian packaging is
+only addressed by `./debian/` and its contents, and the make target `deb` & co.
+
+.build & test: `sysrestic`, `test`
+----
+$ make sysrestic test
+go build ./...
+go build -o sysrestic
 go test ./...
---- FAIL: Test_parseCli (0.00s)
-	main_test.go:6: Test of parseCli() not yet implemented
---- FAIL: Test_parseExcludes (0.00s)
-	main_test.go:10: Test of parseExcludes() not yet implemented
-FAIL
-FAIL	_/home/jzacsh/tmp/lxcshare/sysrestic	0.002s
---- FAIL: TestBuild (0.00s)
-	exclude_test.go:6: tests of ParseHomeConfs() not yet implemented
---- FAIL: TestParseHomeConfs (0.00s)
-	exclude_test.go:10: tests of ParseHomeConfs() not yet implemented
-FAIL
-FAIL	_/home/jzacsh/tmp/lxcshare/sysrestic/exclude	0.002s
-Makefile:10: recipe for target 'test' failed
-make: *** [test] Error 1
+ok  	github.com/jzacsh/sysrestic	0.008s
+ok  	github.com/jzacsh/sysrestic/exclude	0.025s
+ok  	github.com/jzacsh/sysrestic/file	0.021s
+ok  	github.com/jzacsh/sysrestic/usr	0.016s
 ----
 
-.TODO: consider {newerquickdeb}[hacky debian packaging] if `package-like-2013`
-branch falls through
+.make `all`: `clean`, `test`, `sysrestic`
+----
+$ make clean
+rm -f -rf sysrestic sysrestic_*
+
+# snipped ... same as above
+----
+
+NOTE: until `{golangforkat}`, this project was originally a documentation effort
+so I would understand what/how my backup script was installed when I'd
+inevitably forget 6 months down the line. Now this is a locally-built debian
+package that is hopefully just as self-documentation, thanks to tools like `dpkg
+-S ...` and `dpkg-query`, `apt remove`, etc.
