@@ -1,5 +1,4 @@
 = sysrestic: encapsulate restic & your laptop
-:toc:
 :LVMencryption: https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system
 :slocRefBin: https://github.com/jzacsh/bin/blob
 :homeScript: {slocRefBin}/b73710888c23d/share/resticw.sh
@@ -88,15 +87,20 @@ $ find /usr/lib/sysrestic/ \
   /etc/systemd/system/sysrestic* -exec file {} +;
 ----
 
+.configure: set `$SYSRESTIC_REPO` & `$RESTIC_PASSWORD`
+----
+$ $EDITOR /etc/systemd/system/sysrestic.service.d/systemd.conf
+$ $EDITOR /etc/sysrestic.exclude # <1>
+----
+<1> optional
+
 .systemd: tell your machine
 ----
-$ $EDITOR /etc/systemd/system/sysrestic.service.d/systemd.conf # <1>
 $ systemctl daemon-reload
-$ systemctl enable sysrestic.{timer,service} # <2>
+$ systemctl enable sysrestic.{timer,service} # <1>
 $ systemctl start sysrestic.timer
 $ systemctl status sysrestic.{timer,service}
 ----
-<1> critical: set `$SYSRESTIC_REPO` and `$RESTIC_PASSWORD`
 <2> here & below are vanilla commands; part of regular usage
 
 === Usage
