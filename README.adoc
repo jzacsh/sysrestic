@@ -119,11 +119,48 @@ $ $EDITOR /etc/systemd/system/sysrestic.timer
 .check latest status
 ----
 $ systemctl status sysrestic.{timer,service}
+● sysrestic.timer - Periodically backup via sysrestic
+   Loaded: loaded (/usr/lib/sysrestic/systemd/sysrestic.timer; enabled; vendor preset: enabled)
+   Active: active (waiting) since Tue 2017-07-11 14:16:48 EDT; 45min ago
+
+Jul 11 14:16:48 mylaptop systemd[1]: Started Periodically backup via sysrestic.
+
+● sysrestic.service - System-wide backups to a restic repo with excludes for everyone
+   Loaded: loaded (/usr/lib/sysrestic/systemd/sysrestic.service; linked; vendor preset: enabled)
+  Drop-In: /etc/systemd/system/sysrestic.service.d
+           └─systemd.conf
+   Active: active (running) since Tue 2017-07-11 14:45:54 EDT; 15min ago
+     Docs: https://github.com/jzacsh/sysrestic
+ Main PID: 32072 (sysrestic)
+    Tasks: 38
+   Memory: 3.5G
+      CPU: 16min 27.190s
+   CGroup: /system.slice/sysrestic.service
+           ├─32072 /usr/lib/sysrestic/bin/sysrestic /srv/sysrestic/restic /etc/sysrestic.exclude
+           └─32084 restic backup --repo /srv/sysrestic/restic --exclude-file /tmp/sysrestic-unified-excludes_122220733 /
+
+Jul 11 14:45:54 mylaptop systemd[1]: Started System-wide backups to a restic repo with excludes for everyone.
+Jul 11 14:45:54 mylaptop bash[32072]: 25 excludes from 1 of 1 users written to /tmp/sysrestic-unified-excludes_122220733
+Jul 11 14:45:55 mylaptop bash[32072]: scan [/]
+Jul 11 14:46:23 mylaptop bash[32072]: [0:28] 103269 directories, 566652 files, 22.123 GiB
+Jul 11 14:46:23 mylaptop bash[32072]: scanned 103269 directories, 566652 files in 0:28
 ----
 
 .watch logs
 ----
 $ journalctl --pager-end --follow sysrestic.service
+Jul 11 14:45:54 mylaptop systemd[1]: Started System-wide backups to a restic repo with excludes for everyone.
+-- Subject: Unit sysrestic.service has finished start-up
+-- Defined-By: systemd
+-- Support: http://lists.freedesktop.org/mailman/listinfo/systemd-devel
+--
+-- Unit sysrestic.service has finished starting up.
+--
+-- The start-up result is done.
+Jul 11 14:45:54 mylaptop bash[32072]: 25 excludes from 1 of 1 users written to /tmp/sysrestic-unified-excludes_122220733
+Jul 11 14:45:55 mylaptop bash[32072]: scan [/]
+Jul 11 14:46:23 mylaptop bash[32072]: [0:28] 103269 directories, 566652 files, 22.123 GiB
+Jul 11 14:46:23 mylaptop bash[32072]: scanned 103269 directories, 566652 files in 0:28
 ----
 
 .control backups
@@ -135,6 +172,11 @@ $ systemctl restart sysrestic.service
 .determine next backups
 ----
 $ systemctl list-timers sysrestic.timer
+NEXT                         LEFT          LAST                         PASSED    UNIT            ACTIVATES
+Tue 2017-07-11 16:15:54 EDT  1h 15min left Tue 2017-07-11 14:16:48 EDT  43min ago sysrestic.timer sysrestic.service
+
+1 timers listed.
+Pass --all to see loaded but inactive timers, too.
 ----
 
 .disable upcoming backups
