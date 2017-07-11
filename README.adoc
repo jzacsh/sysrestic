@@ -132,6 +132,11 @@ $ systemctl stop sysrestic.service
 $ systemctl restart sysrestic.service
 ----
 
+.determine next backups
+----
+$ systemctl list-timers sysrestic.timer
+----
+
 .disable upcoming backups
 ----
 $ systemctl disable sysrestic.timer
