@@ -46,8 +46,8 @@ func parseUserLine(line string) (*user.User, error) {
 	return u, nil
 }
 
-// List users according to a system-listing like that of /etc/passwd on
-// gnu/linux
+// ListUsers lists users according to a system-listing like that of /etc/passwd
+// on gnu/linux
 //
 // lines is the contents of /etc/passwd (or some similar output) where each
 // element was originally distinguished by a line-break.
