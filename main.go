@@ -45,7 +45,10 @@ func (c *resticCmd) parseExcludes() error {
 		c.UserExcludes++
 	}
 
-	unified, e := exclude.Build(c.ExcludeSysPath, excs...)
+	unified, e := exclude.Build(
+		c.ExcludeSysPath,
+		[]string{c.ResticRepoPath}, // ensure restic excludes its own repo
+		excs...)
 	if e != nil {
 		return e
 	}
