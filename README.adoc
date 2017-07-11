@@ -139,6 +139,7 @@ $ systemctl list-timers sysrestic.timer
 
 .disable upcoming backups
 ----
+$ systemctl stop sysrestic.timer
 $ systemctl disable sysrestic.timer
 ----
 
