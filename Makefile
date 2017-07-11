@@ -35,7 +35,7 @@ $(PKG).deb: $(PKG)
 	sudo fakeroot dpkg-deb --build $(PKG)
 	@printf 'success; now consider `sudo` removing %s\n' "$(PKG)"
 
-all: clean test lint $(OUT)
+all: clean coverage lint $(OUT)
 
 deb: $(PKG).deb
 
@@ -45,7 +45,10 @@ lint:
 test:
 	go test ./...
 
+coverage:
+	go test -cover ./...
+
 clean:
 	$(RM) -rf $(OUT) $(OUT)_*
 
-.PHONY: test all clean deb lint
+.PHONY: test all clean deb lint coverage
