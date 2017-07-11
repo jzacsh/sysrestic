@@ -5,6 +5,7 @@
 :homeScript: {slocRefBin}/b73710888c23d/share/resticw.sh
 :systemScript: {slocRefBin}/b73710888c23d/share/borgw_system.sh
 :golangforkat: 4031a8c162765b
+:olddocefforts: https://github.com/jzacsh/sysrestic/tree/{golangforkat}#overview-usage-how-to
 :resticurl: https://restic.github.io
 :whatisrepo: https://restic.readthedocs.io/en/stable/#quick-start
 :excludes: https://restic.readthedocs.io/en/stable/manual.html?highlight=exclude
@@ -242,9 +243,9 @@ $ $EDITOR /etc/systemd/system/sysrestic.service.d/systemd.conf # <1>
 
 Despite remarks above, that this serves a highly personal use to my own laptop,
 I'd be *happy* to patch or accept patches to make this useful for you too! If
-you want a quick overview on *what* is installed, this README as of
-`{golangforkat}` walked through *exactly* what I tried to encode into the
-debian package.
+you want a quick overview on *what* is installed, this README {olddocefforts}[as
+of `{golangforkat}` walked through] exactly what I ultimately tried to encode
+into the debian package.
 
 === `sysrestic` command
 
