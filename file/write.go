@@ -2,8 +2,8 @@ package file
 
 import "io/ioutil"
 
-// Writes each element of 'strs' as ASCII bytes, each separated by a newline,
-// into a new file at path 'file'
+// WriteAsciiLines writes each element of 'strs' as ASCII bytes, each separated
+// by a newline, into a new file at path 'file'
 func WriteAsciiLines(strs []string, file string) error {
 	var lines []byte
 	for _, ln := range strs {

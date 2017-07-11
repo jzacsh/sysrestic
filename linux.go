@@ -9,7 +9,7 @@ import (
 )
 
 // TODO(zacsh) figure out how/if to test
-func listHumanUserHomes_Linux() ([]string, error) {
+func listHumanUserHomesLinux() ([]string, error) {
 	lines, e := file.ReadLines(usr.PasswdPathLinux)
 	if e != nil {
 		return nil, fmt.Errorf("loading %s: %s", usr.PasswdPathLinux, e)

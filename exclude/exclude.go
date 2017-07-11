@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-// Joins all excludes into a single exclude list
+// Build joins all excludes into a single exclude list
 //
 // System excludes list is required, and arbitrary number of users' excludes are
 // accepted.
@@ -62,7 +62,7 @@ func findConf(homePath string) (*os.File, error) {
 	return nil, fmt.Errorf("neither .config/ nor top-level dot-file found")
 }
 
-// Read exclude paths for a given user's home directory
+// ParseHomeConf reads exclude paths for a given user's home directory
 //
 // homePath: is a string indicatging path to single user's home "/home/bob" or
 // "/usrhomes/disk2/alic/". The exclude file found under homePath will be read

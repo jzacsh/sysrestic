@@ -27,7 +27,7 @@ func (c *resticCmd) String() string {
 }
 
 func (c *resticCmd) parseExcludes() error {
-	homes, e := listHumanUserHomes_Linux()
+	homes, e := listHumanUserHomesLinux()
 	if e != nil {
 		return fmt.Errorf("finding $HOMEs: %v", e)
 	}
