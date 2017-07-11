@@ -6,3 +6,4 @@
 /mnt/*
 /media/*
 /lost+found
+/var/lib/lxcfs/
