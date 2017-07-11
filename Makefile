@@ -32,7 +32,7 @@ $(PKG): $(OUT)
 	sudo chown -R root:root $(PKG)
 
 $(PKG).deb: $(PKG)
-	dpkg-deb --build $(PKG)
+	sudo fakeroot dpkg-deb --build $(PKG)
 	@printf 'success; now consider `sudo` removing %s\n' "$(PKG)"
 
 all: clean test $(OUT)
