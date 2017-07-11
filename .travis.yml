@@ -1,4 +1,6 @@
 script: make all
+before_script:
+  - go get -u github.com/golang/lint/golint
 language: go
 go:
   - 1.8.x
