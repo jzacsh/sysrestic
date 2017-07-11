@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"../testdata"
+	"github.com/jzacsh/sysrestic/testdata"
 )
 
 const fixtureDir string = "../testdata"

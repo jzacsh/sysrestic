@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"./file"
-	"./usr"
+	"github.com/jzacsh/sysrestic/file"
+	"github.com/jzacsh/sysrestic/usr"
 )
 
 // TODO(zacsh) figure out how/if to test

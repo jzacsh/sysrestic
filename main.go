@@ -7,8 +7,8 @@ import (
 	"os"
 	"os/exec"
 
-	"./exclude"
-	"./file"
+	"github.com/jzacsh/sysrestic/exclude"
+	"github.com/jzacsh/sysrestic/file"
 )
 
 type resticCmd struct {
