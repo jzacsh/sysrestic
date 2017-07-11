@@ -33,7 +33,8 @@ $(PKG): $(OUT)
 
 $(PKG).deb: $(PKG)
 	sudo fakeroot dpkg-deb --build $(PKG)
-	@printf 'success; now consider `sudo` removing %s\n' "$(PKG)"
+	@printf 'success; just cleaning up root chown on %s\n' "$(PKG)"
+	sudo chown -R $(USER):$(USER) $(PKG) $@
 
 all: clean coverage lint $(OUT)
 
