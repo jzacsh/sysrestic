@@ -106,7 +106,7 @@ $ systemctl status sysrestic.{timer,service}
 ----
 <1> here & below are vanilla commands; part of regular usage
 
-=== Usage
+== Usage
 
 Systemd -- ie: `Systemctl` -- is now your interface for this repository's
 impact on your machine.
