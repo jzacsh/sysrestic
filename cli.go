@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/jzacsh/sysrestic/file"
@@ -48,8 +47,7 @@ func looksLikeHelp(arg string) bool {
 func parseCli(args []string) (*resticCmd, error) {
 	if len(args) != 2 {
 		if len(args) == 1 && looksLikeHelp(args[0]) {
-			fmt.Printf(usageDoc)
-			os.Exit(0)
+			return nil, nil
 		}
 		return nil, fmt.Errorf("must provide 2 args, got %d", len(args))
 	}

@@ -80,6 +80,10 @@ func main() {
 	if e != nil {
 		lg.Fatalf("parsing command: %v\n", e)
 	}
+	if r == nil {
+		fmt.Printf(usageDoc)
+		os.Exit(0)
+	}
 	r.Err = lg
 
 	if e := r.parseExcludes(); e != nil {
