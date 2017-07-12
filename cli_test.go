@@ -9,7 +9,7 @@ import (
 
 const fixtureDir string = "testdata"
 
-func TestparseCliHelp(t *testing.T) {
+func TestParseCliHelp(t *testing.T) {
 	helps := []string{
 		"h", "-h", "--h",
 		"help", "-help", "--help",
@@ -22,7 +22,7 @@ func TestparseCliHelp(t *testing.T) {
 	}
 }
 
-func TestparseCliMissingArgs(t *testing.T) {
+func TestParseCliMissingArgs(t *testing.T) {
 	clis := [][]string{
 		[]string{},
 		[]string{"/some/repo"},
@@ -39,7 +39,7 @@ func TestparseCliMissingArgs(t *testing.T) {
 	}
 }
 
-func TestparseCliBadArgs(t *testing.T) {
+func TestParseCliBadArgs(t *testing.T) {
 	testdata.AssertFixtureDir(t, fixtureDir)
 
 	clis := [][]string{
@@ -64,7 +64,7 @@ func TestparseCliBadArgs(t *testing.T) {
 	}
 }
 
-func TestparseCliOK(t *testing.T) {
+func TestParseCliOK(t *testing.T) {
 	testdata.AssertFixtureDir(t, fixtureDir)
 
 	args := []string{
