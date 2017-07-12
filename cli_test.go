@@ -83,10 +83,6 @@ func TestparseCliOK(t *testing.T) {
 	if cmd == nil {
 		t.Errorf("empty CMD for valid commandline")
 	}
-	if cmd.ResticRepoPath != args[0] {
-		t.Errorf("bad CMD; expected RESTIC_REPO to be %s, but got '%s'",
-			args[0], cmd.ResticRepoPath)
-	}
 	if cmd.ExcludeSysPath != args[1] {
 		t.Errorf("bad CMD; expected EXCLUDE_FILE to be %s, but got '%s'",
 			args[1], cmd.ExcludeSysPath)

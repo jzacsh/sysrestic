@@ -13,7 +13,6 @@ import (
 
 type resticCmd struct {
 	ExcludeSysPath  string
-	ResticRepoPath  string
 	BackupTarget    string
 	Err             *log.Logger
 	UnifiedExcludes string
@@ -23,9 +22,7 @@ type resticCmd struct {
 }
 
 func (c *resticCmd) String() string {
-	return fmt.Sprintf(
-		"RESTIC_REPO:  '%s'\nEXCLUDE_FILE:  '%s'\n",
-		c.ResticRepoPath, c.ExcludeSysPath)
+	return fmt.Sprintf("EXCLUDE_FILE:  '%s'\n", c.ExcludeSysPath)
 }
 
 func (c *resticCmd) parseExcludes() error {
@@ -35,8 +32,13 @@ func (c *resticCmd) parseExcludes() error {
 	}
 	c.Users = len(homes)
 
+	resticRepo := os.Getenv("RESTIC_REPOSITORY")
+	if len(resticRepo) == 0 {
+		return fmt.Errorf("$RESTIC_REPOSITORY empty")
+	}
+
 	// ensure restic excludes its own repo
-	excs := [][]string{[]string{c.ResticRepoPath}}
+	excs := [][]string{[]string{resticRepo}}
 
 	for _, home := range homes {
 		excludes, e := exclude.ParseHomeConf(home)
@@ -72,7 +74,6 @@ func (c *resticCmd) parseExcludes() error {
 func (c *resticCmd) runBackup() error {
 	cmd := exec.Command(
 		"restic", "backup",
-		"--repo", c.ResticRepoPath,
 		"--exclude-file", c.UnifiedExcludes,
 		c.BackupTarget)
 	cmd.Stdout = os.Stdout

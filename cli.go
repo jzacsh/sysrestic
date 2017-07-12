@@ -12,21 +12,19 @@ const defaultBackupTarget string = "/"
 const usageDoc string = `sysrestic - an exclude-file joiner for system backups with restic
 
 Synopsis:
-  sysreestic [help] RESTIC_REPO EXCLUDE_FILE
+  sysreestic [help] EXCLUDE_FILE
 
 Description:
-  Execs to restic[1] to backup / to RESTIC_REPO path with an automatically
-  built list for restic's --exclude-file option.
+  Execs to restic[1] to backup / to $RESTIC_REPOSITORY path with an
+  automatically built list for restic's --exclude-file option.
 
 Outline:
   1. visits every $HOME on the system
   2. reads said $HOME's ~/.config/sysrestic.exclude or ~/.sysrestic.exclude
   3. creates a new exclude-file, unifying all $HOME's excludes w/EXCLUDE_FILE
-  4. shells out to restic:
-       restic backup \
-          --repo RESTIC_REPO \
-          --exclude-file /path/to/temporary/unified/exclude-list \
-          /
+  4. ensures $RESTIC_REPOSITORY is set
+  5. shells out to restic:
+       restic backup --exclude-file /path/to/temporary/unified/exclude-list /
 
 Reading Exclude Files:
   For both system and users' exclude files, empty files are okay.
@@ -45,23 +43,19 @@ func looksLikeHelp(arg string) bool {
 }
 
 func parseCli(args []string) (*resticCmd, error) {
-	if len(args) != 2 {
+	if len(args) != 1 || looksLikeHelp(args[0]) {
 		if len(args) == 1 && looksLikeHelp(args[0]) {
 			return nil, nil
 		}
-		return nil, fmt.Errorf("must provide 2 args, got %d", len(args))
+		return nil, fmt.Errorf("must provide EXCLUDE_FILE, got %d args", len(args))
 	}
 
 	r := &resticCmd{
-		ResticRepoPath: strings.TrimSpace(args[0]),
-		ExcludeSysPath: strings.TrimSpace(args[1]),
 		BackupTarget:   defaultBackupTarget,
-	}
-	if is, e := file.IsReadableDir(r.ResticRepoPath); !is {
-		return nil, fmt.Errorf("RESTIC_REPO not a readable dir: %s", e)
+		ExcludeSysPath: strings.TrimSpace(args[0]),
 	}
 	if is, e := file.IsReadableFile(r.ExcludeSysPath); !is {
-		return nil, fmt.Errorf("EXCLUDE_FILE not a readable file: %s", e)
+		return nil, fmt.Errorf("EXCLUDE_FILE, '%s' not a readable file: %s", r.ExcludeSysPath, e)
 	}
 
 	return r, nil
