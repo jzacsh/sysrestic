@@ -6,9 +6,6 @@ import (
 	"strings"
 )
 
-// PasswdPathLinux is standard path on GNU/Linux systems to user-data
-const PasswdPathLinux string = "/etc/passwd"
-
 // Parses a /etc/passwd formatted line, and produces os/user.User object
 // eg: given "alice:x:1000:1000:Alice,,,:/home/alice:/bin/bash", produces:
 //   user.User{

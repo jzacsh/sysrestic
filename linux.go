@@ -8,16 +8,19 @@ import (
 	"github.com/jzacsh/sysrestic/usr"
 )
 
+// PasswdPathLinux is standard path on GNU/Linux systems to user-data
+const PasswdPathLinux string = "/etc/passwd"
+
 // TODO(zacsh) figure out how/if to test
 func listHumanUserHomesLinux() ([]string, error) {
-	lines, e := file.ReadLines(usr.PasswdPathLinux)
+	lines, e := file.ReadLines(PasswdPathLinux)
 	if e != nil {
-		return nil, fmt.Errorf("loading %s: %s", usr.PasswdPathLinux, e)
+		return nil, fmt.Errorf("loading %s: %s", PasswdPathLinux, e)
 	}
 
 	usrs, e := usr.ListUsers(lines)
 	if e != nil {
-		return nil, fmt.Errorf("malformed %s: %s", usr.PasswdPathLinux, e)
+		return nil, fmt.Errorf("malformed %s: %s", PasswdPathLinux, e)
 	}
 
 	var homes []string
@@ -29,7 +32,7 @@ func listHumanUserHomesLinux() ([]string, error) {
 		uid, e := strconv.Atoi(u.Uid)
 		if e != nil {
 			return nil, fmt.Errorf(
-				"malformed user='%s' in %s: %s", u.Username, usr.PasswdPathLinux, e)
+				"malformed user='%s' in %s: %s", u.Username, PasswdPathLinux, e)
 		}
 		if uid < 1000 {
 			continue
