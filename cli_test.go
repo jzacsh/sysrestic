@@ -74,10 +74,7 @@ func TestParseCliBadArgs(t *testing.T) {
 func TestParseCliOK(t *testing.T) {
 	testdata.AssertFixtureDir(t, fixtureDir)
 
-	args := []string{
-		filepath.Join(fixtureDir, "/etc/"),
-		filepath.Join(fixtureDir, "/etc/sysrestic.exclude"),
-	}
+	args := []string{filepath.Join(fixtureDir, "/etc/sysrestic.exclude")}
 
 	cmd, err := parseCli(args)
 
@@ -90,8 +87,8 @@ func TestParseCliOK(t *testing.T) {
 	if cmd == nil {
 		t.Errorf("empty CMD for valid commandline")
 	}
-	if cmd.ExcludeSysPath != args[1] {
+	if cmd.ExcludeSysPath != args[0] {
 		t.Errorf("bad CMD; expected EXCLUDE_FILE to be %s, but got '%s'",
-			args[1], cmd.ExcludeSysPath)
+			args[0], cmd.ExcludeSysPath)
 	}
 }
