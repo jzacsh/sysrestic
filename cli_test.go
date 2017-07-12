@@ -23,19 +23,26 @@ func TestParseCliHelp(t *testing.T) {
 }
 
 func TestParseCliMissingArgs(t *testing.T) {
+	testdata.AssertFixtureDir(t, fixtureDir)
+
 	clis := [][]string{
 		[]string{},
-		[]string{"/some/repo"},
-		[]string{"/some/exclude"},
+		[]string{
+			filepath.Join(fixtureDir, "/etc/"),
+			filepath.Join(fixtureDir, "/etc/sysrestic.exclude"),
+		},
 		[]string{"/some/repo", "/some/exclude", "--help"},
 	}
 
 	for _, args := range clis {
-		if cmd, err := parseCli(args); cmd != nil || err == nil {
-			t.Errorf(
-				"expected cli `%v` no cmd & error; got err: '%v' & cmd:\n%v\n",
-				args, err, cmd)
+		cmd, err := parseCli(args)
+		if cmd == nil && err != nil {
+			t.Logf("properly reported problem; got: %v\n", err)
+			continue
 		}
+		t.Errorf(
+			"expected cli `%v` to be caught; got no error & cmd:\n%v\n",
+			args, cmd)
 	}
 }
 
