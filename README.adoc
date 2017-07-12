@@ -112,7 +112,7 @@ $ find /usr/lib/sysrestic/ \
 ----
 
 [[systemwideconf]]
-.configure: set `$SYSRESTIC_REPO` & `$RESTIC_PASSWORD`
+.configure: set `$RESTIC_REPOSITORY` & `$RESTIC_PASSWORD`
 ----
 $ $EDITOR /etc/systemd/system/sysrestic.service.d/systemd.conf
 $ $EDITOR /etc/sysrestic.exclude # <1>
@@ -254,7 +254,7 @@ $ systemctl stop sysrestic.timer
 ----
 $ $EDITOR /etc/systemd/system/sysrestic.service.d/systemd.conf # <1>
 ----
-<1> specifically, change the `$SYSRESTIC_REPO` value
+<1> specifically, change the `$RESTIC_REPOSITORY` value
 
 .tweak resources restic gets
 ----
