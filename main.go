@@ -35,7 +35,9 @@ func (c *resticCmd) parseExcludes() error {
 	}
 	c.Users = len(homes)
 
-	var excs [][]string
+	// ensure restic excludes its own repo
+	excs := [][]string{[]string{c.ResticRepoPath}}
+
 	for _, home := range homes {
 		excludes, e := exclude.ParseHomeConf(home)
 		if e != nil {
@@ -45,10 +47,7 @@ func (c *resticCmd) parseExcludes() error {
 		c.UserExcludes++
 	}
 
-	unified, e := exclude.Build(
-		c.ExcludeSysPath,
-		[]string{c.ResticRepoPath}, // ensure restic excludes its own repo
-		excs...)
+	unified, e := exclude.Build(c.ExcludeSysPath, excs...)
 	if e != nil {
 		return e
 	}
