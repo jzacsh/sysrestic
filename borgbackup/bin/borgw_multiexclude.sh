@@ -33,7 +33,6 @@ declare -r repoDir="$1"; shift
 
 [[ "$EUID" -eq 0 ]] || die 'MUST be run as root, but found $EUID=%s\n' "$EUID"
 
-printf '[dbg %s] $BORG_PASSPHRASE="%s"\n' "$(date --iso-8601=s)" "$BORG_PASSPHRASE" >/tmp/jon
 [[ "${BORG_PASSPHRASE:-x}" != x ]] || die '$BORG_PASSPHRASE not set\n'
 
 isWriteDir "$repoDir" ||
