@@ -1,0 +1,37 @@
+= `sysbackup` quick alternative
+:borgbackup: https://borgbackup.readthedocs.io/
+:sysrestic: https://github.com/jzacsh/sysrestic
+
+System-wide backup with combined exclude lines.
+
+System backups using {borgbackup}[borgbackup]. Manual - entirely untested,
+shell-based - version of {sysrestic}[`sysrestic`].
+
+== Installing
+
+.create a `sysbackup.conf`
+----
+[Service]
+Environment="PATH=/usr/lib/sysbackup/bin/:/usr/bin/"
+Environment='BORG_PASSPHRASE=your complicated password'
+----
+
+.modify `sysbackup.service` with exclude-file args
+----
+# ... snipped # <1>
+ExecStart=/bin/bash -c 'borgw_multiexclude.sh /srv/borgbackup/ /home/jzacsh/.config/sys-borgbackup.exclude'
+----
+<1> here `/home/jzacsh/.config/sys-borgbackup.exclude` should be replaced with
+1+N args
+
+.install on system
+----
+root@yourpc$ mkdir -p /usr/lib/sysbackup/bin
+root@yourpc$ cp -rpv ./sysbackup.* /usr/lib/sysbackup/
+root@yourpc$ mkdir /etc/systemd/system/sysbackup.service.d/
+root@yourpc$ cp -v /usr/lib/sysbackup/sysbackup.conf /etc/systemd/system/sysbackup.service.d/
+root@yourpc$ cp -v /usr/lib/sysbackup/sysbackup.service /usr/lib/systemd/system/
+root@yourpc$ cp -v /usr/lib/sysbackup/sysbackup.timer   /usr/lib/systemd/system/
+root@yourpc$ sytemctl enable sysbackup.timer
+root@yourpc$ sytemctl enable sysbackup.service
+----

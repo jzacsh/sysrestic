@@ -1,0 +1,7 @@
+[Unit]
+Description=System-wide backups to a restic repo with excludes for everyone
+Documentation=https://github.com/jzacsh/sysrestic
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c 'borgw_multiexclude.sh /srv/borgbackup/ /home/jzacsh/.config/sys-borgbackup.exclude'

@@ -1,0 +1,9 @@
+[Unit]
+Description=Periodically backup via sysrestic
+
+[Timer]
+OnUnitActiveSec=90m
+OnBootSec=15m
+
+[Install]
+WantedBy=timers.target
