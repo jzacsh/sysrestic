@@ -1,7 +1,4 @@
 #!/bin/bash
-#
-# System backup script. Thinly wraps borgbackup, and expects $1 is a
-# Expects
 set -o errexit
 set -o nounset
 set -o pipefail
