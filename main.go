@@ -83,6 +83,7 @@ func printResticVersion() {
 func (c *resticCmd) runBackup() error {
 	cmd := exec.Command(
 		"restic", "backup",
+		"--one-file-system",
 		"--exclude-file", c.UnifiedExcludes,
 		c.BackupTarget)
 	cmd.Stdout = os.Stdout
