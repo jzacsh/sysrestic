@@ -71,6 +71,15 @@ func (c *resticCmd) parseExcludes() error {
 	return file.WriteASCIILines(c.Excludes, c.UnifiedExcludes)
 }
 
+func printResticVersion() {
+	cmd := exec.Command("restic", "version")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if e := cmd.Run(); e != nil {
+		panic(fmt.Errorf("checking restic's version: %v", e))
+	}
+}
+
 func (c *resticCmd) runBackup() error {
 	cmd := exec.Command(
 		"restic", "backup",
@@ -100,6 +109,8 @@ func main() {
 	fmt.Printf(
 		"%d excludes from %d of %d users written to %s\n",
 		len(r.Excludes), r.UserExcludes, r.Users, r.UnifiedExcludes)
+
+	printResticVersion()
 
 	if e := r.runBackup(); e != nil {
 		r.Err.Fatalf("restic: %v\n", e)
