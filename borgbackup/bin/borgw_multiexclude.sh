@@ -86,7 +86,7 @@ autoExcludeRepo() (
   printf '%s' "$repoDir"
 )
 autoExcluded="$(autoExcludeRepo)"
-log INFO 'auto-excluding repo via exclude: "%s"\n'  "$autoExcluded"
+printf 'auto-excluding repo via exclude: "%s"\n' "$autoExcluded"
 systemExcludes+="$autoExcluded"
 
 for exclude in "${systemExcludes[@]}";do
