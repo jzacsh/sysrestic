@@ -106,8 +106,22 @@ printf 'done processing excludes files\n'
 printf 'Dynamic script built; going to run the below:\n'
 { cat -n "$borgExcludeBackup"; echo; }
 
-printf 'Running...\n'
+printf 'Running backup...\n'
 (
   set -x
-  time "$borgExcludeBackup"
+  time "$borgExcludeBackup" || die 'backup exited: %d\n' $?
+)
+
+printf 'Pruning old backups...\n'
+(
+  set -x
+  time (
+    borg prune \
+      --keep-hourly=48 \
+      --keep-daily=14 \
+      --keep-weekly=20 \
+      --keep-monthly=12 \
+      --keep-yearly=30 \
+      "$repoDir"
+  ) || die 'prune of old backups exited: %d\n' $?
 )
