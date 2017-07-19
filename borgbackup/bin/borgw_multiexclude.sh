@@ -87,7 +87,7 @@ autoExcludeRepo() (
 )
 autoExcluded="$(autoExcludeRepo)"
 printf 'auto-excluding repo via exclude: "%s"\n' "$autoExcluded"
-systemExcludes+="$autoExcluded"
+systemExcludes+=("$autoExcluded")
 
 for exclude in "${systemExcludes[@]}";do
   printf -- " --exclude '%s' " "$exclude" >> "$borgExcludeBackup"
